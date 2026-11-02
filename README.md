@@ -7,7 +7,7 @@ Site institucional da SALT: lojas Nuvemshop e Shopify, landing pages, leads + mi
 
 ## Estrutura
 - `index.html`: página completa (HTML, CSS e JavaScript).
-- `img/`: logos do "S" da SALT e favicon.
+- `img/`: logo oficial da SALT (`logo-salt-original.png` em alta, `logo-salt.png` para o site), o "S" em degradê (`s-gradiente.png`) e o favicon.
 - `fonts/`: Saira Condensed (títulos) e Lato (textos), com licenças.
 
 ## Identidade visual
