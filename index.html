@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SALT Tech Solution — lojas, landing pages e sistemas sob medida</title>
+<meta name="description" content="SALT Tech Solution: lojas Nuvemshop e Shopify, landing pages com captura de leads, tráfego pago e sistemas web sob medida.">
+<link rel="icon" href="img/favicon-32.png">
+<style>
+@font-face{font-family:'Saira Condensed';font-weight:600;font-display:swap;src:url(fonts/saira-condensed-latin-600-normal.woff2) format('woff2')}
+@font-face{font-family:'Saira Condensed';font-weight:700;font-display:swap;src:url(fonts/saira-condensed-latin-700-normal.woff2) format('woff2')}
+@font-face{font-family:'Lato';font-weight:400;font-display:swap;src:url(fonts/lato-latin-400-normal.woff2) format('woff2')}
+@font-face{font-family:'Lato';font-weight:700;font-display:swap;src:url(fonts/lato-latin-700-normal.woff2) format('woff2')}
+
+:root{
+  --navy:#061033; --navy-2:#0F1B45; --navy-3:#08112E; --deep:#002772;
+  --blue:#0068FF; --blue-tx:#4D94FF; --turq:#2EDDD8;
+  --tx:#EEF2FA; --mut:#93A0C6; --bd:rgba(255,255,255,.10);
+  --paper:#EDF1F8; --paper-tx:#061033; --paper-mut:#5B6785; --paper-bd:#D3DBEA;
+  --fh:'Saira Condensed','Arial Narrow',system-ui,sans-serif;
+  --fb:'Lato',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --wrap:1180px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--navy);color:var(--tx);font:400 17px/1.6 var(--fb);-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+[hidden]{display:none!important}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--turq);outline-offset:3px;border-radius:4px}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 24px}
+h1,h2,h3{font-family:var(--fh);font-weight:700;line-height:1.02;margin:0;letter-spacing:-.005em}
+p{margin:0}
+.skip{position:absolute;left:-999px}
+.skip:focus{left:16px;top:16px;background:var(--blue);color:#fff;padding:8px 12px;z-index:10}
+
+/* Botões */
+.btn{display:inline-flex;align-items:center;gap:10px;font:700 16px/1 var(--fb);text-decoration:none;padding:15px 22px;border-radius:10px;border:0;cursor:pointer;transition:background .15s,color .15s}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-primary:hover{background:#1F7BFF}
+.btn-ghost{color:var(--tx);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.28);background:transparent}
+.btn-ghost:hover{box-shadow:inset 0 0 0 1.5px var(--turq);color:var(--turq)}
+
+/* Topo */
+.top{position:sticky;top:0;z-index:5;background:rgba(6,16,51,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--bd)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;height:68px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.brand img{height:30px;width:auto}
+.brand b{font:700 26px/1 var(--fh);letter-spacing:.04em}
+.brand span{font:400 13px/1.1 var(--fb);color:var(--mut);max-width:70px}
+.nav{display:flex;gap:28px;align-items:center}
+.nav a{text-decoration:none;color:var(--mut);font-size:15px}
+.nav a:hover{color:var(--tx)}
+.nav .btn{padding:11px 16px;font-size:15px;color:#fff}
+
+/* Hero */
+.hero{position:relative;overflow:hidden;padding:72px 0 96px}
+.hero::before{content:"";position:absolute;right:-12%;top:-30%;width:70%;height:140%;background:radial-gradient(closest-side,rgba(0,104,255,.28),transparent 70%);pointer-events:none}
+.hero .wrap{position:relative;display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:center}
+.hero h1{font-size:clamp(52px,8.4vw,112px);text-transform:uppercase;letter-spacing:.005em}
+.hero h1 .line{display:block}
+.hero h1 .dim{color:var(--mut)}
+.hero .lead{margin-top:26px;max-width:34em;font-size:19px;color:#C9D2EA}
+.hero .ctas{display:flex;gap:14px;flex-wrap:wrap;margin-top:34px}
+.partner{margin-top:38px;display:flex;gap:12px;align-items:center;color:var(--mut);font-size:14.5px}
+.partner i{width:10px;height:10px;background:var(--blue);display:inline-block}
+
+/* O "S" e o painel */
+.mark{position:relative;height:540px}
+.mark .s{position:absolute;right:6%;top:0;height:100%;width:auto;filter:drop-shadow(0 30px 60px rgba(0,104,255,.35))}
+.panel{position:absolute;left:0;bottom:36px;width:300px;background:var(--navy-2);border:1px solid var(--bd);border-radius:16px;padding:18px 18px 16px;box-shadow:0 24px 50px rgba(0,0,0,.45)}
+.panel .hd{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;color:var(--mut)}
+.panel .hd b{font:700 18px/1 var(--fh);color:var(--tx);letter-spacing:.03em}
+.panel .val{font:700 34px/1.1 var(--fh);margin:10px 0 2px}
+.panel .delta{font-size:13px;color:var(--turq)}
+.bars{display:flex;align-items:flex-end;gap:7px;height:78px;margin-top:14px}
+.bars span{flex:1;background:linear-gradient(180deg,var(--turq),var(--blue));border-radius:4px 4px 1px 1px;height:var(--h);transform-origin:bottom;animation:grow .9s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i) * 70ms + .3s)}
+@keyframes grow{from{transform:scaleY(0)}}
+.panel .ft{margin-top:10px;display:flex;justify-content:space-between;font-size:11.5px;color:var(--mut)}
+
+/* Seções */
+section{scroll-margin-top:70px}
+.sec{padding:110px 0}
+.sec-head{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:end;margin-bottom:56px}
+.sec-head h2{font-size:clamp(40px,5.4vw,68px);text-transform:uppercase}
+.sec-head p{color:var(--mut);max-width:36em;font-size:18px}
+
+/* Serviços: lista em linhas */
+.svc{border-top:1px solid var(--bd)}
+.svc-row{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1.4fr) minmax(0,1fr);gap:32px;padding:34px 0;border-bottom:1px solid var(--bd)}
+.svc-row h3{font-size:34px;text-transform:uppercase}
+.svc-row .tag{display:inline-block;margin-top:10px;font-size:13px;color:var(--turq);border:1px solid rgba(46,221,216,.4);padding:4px 10px;border-radius:999px}
+.svc-row p{color:#C9D2EA}
+.svc-row ul{margin:0;padding:0;list-style:none;color:var(--mut);font-size:15.5px}
+.svc-row li{padding-left:18px;position:relative;margin-bottom:6px}
+.svc-row li::before{content:"";position:absolute;left:0;top:.62em;width:7px;height:7px;background:var(--blue)}
+
+/* Sistemas sob medida: seção clara */
+.dev{background:var(--paper);color:var(--paper-tx)}
+.dev .sec-head p{color:var(--paper-mut)}
+.new{display:inline-flex;align-items:center;gap:8px;background:var(--navy);color:var(--turq);font:700 14px/1 var(--fb);padding:8px 12px;border-radius:999px;margin-bottom:18px}
+.dev-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:start}
+.caps{display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:2px solid var(--paper-tx)}
+.cap{padding:24px 24px 26px 0;border-bottom:1px solid var(--paper-bd)}
+.cap:nth-child(odd){border-right:1px solid var(--paper-bd)}
+.cap:nth-child(even){padding-left:24px}
+.cap h3{font-size:24px;text-transform:uppercase;margin-bottom:8px}
+.cap p{color:var(--paper-mut);font-size:15.5px}
+.ideas{margin-top:34px}
+.ideas h3{font-size:22px;text-transform:uppercase;margin-bottom:14px}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chips span{background:#fff;border:1px solid var(--paper-bd);border-radius:999px;padding:8px 14px;font-size:15px}
+
+.case{background:var(--navy);color:var(--tx);border-radius:22px;padding:34px;position:relative;overflow:hidden}
+.case::after{content:"";position:absolute;right:-80px;top:-80px;width:260px;height:260px;background:radial-gradient(closest-side,rgba(0,104,255,.35),transparent)}
+.case .who{display:flex;gap:16px;align-items:center;position:relative}
+.case .icon{width:64px;height:64px;border-radius:16px;background:#fff;display:grid;place-items:center}
+.case .icon img{height:40px}
+.case .who b{display:block;font:700 34px/1 var(--fh);letter-spacing:.03em}
+.case .who small{color:var(--mut);font-size:14px}
+.case > p{margin-top:22px;color:#C9D2EA}
+.case dl{margin:24px 0 0;display:grid;grid-template-columns:1fr 1fr;gap:16px 20px}
+.case dt{font:700 15px/1.3 var(--fb);color:var(--tx)}
+.case dd{margin:2px 0 0;color:var(--mut);font-size:14.5px}
+.stack{margin-top:26px;padding-top:18px;border-top:1px solid var(--bd);display:flex;flex-wrap:wrap;gap:8px 18px;color:var(--mut);font-size:14px}
+.stack b{color:var(--turq);font-weight:700}
+.case .btn{margin-top:26px}
+
+/* Processo */
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,1fr);gap:0;counter-reset:s}
+.steps li{counter-increment:s;padding:0 22px 0 0;position:relative}
+.steps li::before{content:counter(s);display:block;font:700 64px/1 var(--fh);color:transparent;-webkit-text-stroke:1.5px var(--blue-tx);margin-bottom:16px}
+.steps li::after{content:"";position:absolute;top:30px;left:56px;right:16px;height:1px;background:var(--bd)}
+.steps li:last-child::after{display:none}
+.steps h3{font-size:24px;text-transform:uppercase;margin-bottom:8px}
+.steps p{color:var(--mut);font-size:15.5px}
+
+/* Contato */
+.contact{background:linear-gradient(180deg,var(--navy) 0%,var(--navy-3) 100%);border-top:1px solid var(--bd)}
+.contact-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:56px;align-items:start}
+.contact h2{font-size:clamp(44px,6vw,80px);text-transform:uppercase}
+.contact .side p{color:var(--mut);margin-top:20px;max-width:30em}
+.contact .side a.ig{display:inline-flex;margin-top:26px;font:700 22px/1 var(--fh);letter-spacing:.03em;color:var(--turq);text-decoration:none}
+.contact .side a.ig:hover{text-decoration:underline}
+form{background:var(--navy-2);border:1px solid var(--bd);border-radius:18px;padding:28px}
+.field{margin-bottom:18px}
+label{display:block;font-size:14px;font-weight:700;margin-bottom:7px}
+input,select,textarea{width:100%;font:400 16px/1.4 var(--fb);color:var(--tx);background:var(--navy-3);border:1px solid rgba(255,255,255,.14);border-radius:10px;padding:13px 14px}
+textarea{min-height:110px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--blue-tx);box-shadow:0 0 0 3px rgba(0,104,255,.25)}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opts label{margin:0;font-weight:400;font-size:15px;cursor:pointer}
+.opts input{position:absolute;opacity:0;width:1px;height:1px}
+.opts span{display:inline-block;padding:9px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.18);color:#C9D2EA}
+.opts input:checked + span{background:var(--blue);border-color:var(--blue);color:#fff}
+.opts input:focus-visible + span{outline:2px solid var(--turq);outline-offset:2px}
+.preview{margin-top:6px;background:var(--navy-3);border:1px dashed rgba(255,255,255,.18);border-radius:10px;padding:14px;font-size:14.5px;color:#C9D2EA;white-space:pre-wrap}
+.send{display:flex;flex-wrap:wrap;gap:12px;margin-top:18px}
+.note{margin-top:12px;font-size:13.5px;color:var(--mut);min-height:1.2em}
+
+footer{padding:34px 0;border-top:1px solid var(--bd);color:var(--mut);font-size:14px}
+footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:center}
+footer .brand b{font-size:20px}
+footer .brand img{height:24px}
+
+/* Responsivo */
+@media (max-width:980px){
+  .hero .wrap,.sec-head,.dev-grid,.contact-grid{grid-template-columns:1fr}
+  .mark{height:420px;max-width:520px}
+  .svc-row{grid-template-columns:1fr;gap:14px}
+  .steps{grid-template-columns:1fr 1fr;gap:34px 20px}
+  .steps li::after{display:none}
+  .nav a:not(.btn){display:none}
+}
+@media (max-width:560px){
+  body{font-size:16px}
+  .sec{padding:80px 0}
+  .hero{padding:48px 0 72px}
+  .mark{height:360px}
+  .panel{width:250px;bottom:10px}
+  .caps,.case dl{grid-template-columns:1fr}
+  .cap:nth-child(odd){border-right:0}
+  .cap:nth-child(even){padding-left:0}
+  .steps{grid-template-columns:1fr}
+  .brand span{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#conteudo">Pular para o conteúdo</a>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#inicio" aria-label="SALT Tech Solution, início">
+      <img src="img/logo-s-turquesa.png" alt="">
+      <b>SALT</b><span>Tech Solution</span>
+    </a>
+    <nav class="nav" aria-label="Principal">
+      <a href="#servicos">Serviços</a>
+      <a href="#sistemas">Sistemas sob medida</a>
+      <a href="#processo">Como trabalhamos</a>
+      <a class="btn btn-primary" href="#contato">Pedir orçamento</a>
+    </nav>
+  </div>
+</header>
+
+<main id="conteudo">
+<section class="hero" id="inicio">
+  <div class="wrap">
+    <div>
+      <h1>
+        <span class="line">Sua loja,</span>
+        <span class="line">sua página,</span>
+        <span class="line dim">seu sistema.</span>
+      </h1>
+      <p class="lead">A SALT cria lojas virtuais, landing pages que capturam clientes e, agora, sistemas web feitos sob medida para o seu negócio, do primeiro esboço até o app instalado no celular.</p>
+      <div class="ctas">
+        <a class="btn btn-primary" href="#contato">Pedir orçamento</a>
+        <a class="btn btn-ghost" href="#sistemas">Ver sistemas sob medida</a>
+      </div>
+      <p class="partner"><i aria-hidden="true"></i>Parceiro especialista Nuvemshop · lojas Shopify para vender no exterior</p>
+    </div>
+
+    <div class="mark" aria-hidden="true">
+      <img class="s" src="img/logo-s-gradiente.png" alt="">
+      <div class="panel">
+        <div class="hd"><b>SALTFIN</b><span>Patrimônio · 2026</span></div>
+        <div class="val">R$ 48.320</div>
+        <div class="delta">+ R$ 2.140 este mês</div>
+        <div class="bars">
+          <span style="--h:28%;--i:0"></span><span style="--h:34%;--i:1"></span><span style="--h:31%;--i:2"></span>
+          <span style="--h:45%;--i:3"></span><span style="--h:52%;--i:4"></span><span style="--h:49%;--i:5"></span>
+          <span style="--h:63%;--i:6"></span><span style="--h:71%;--i:7"></span><span style="--h:78%;--i:8"></span>
+          <span style="--h:92%;--i:9"></span>
+        </div>
+        <div class="ft"><span>jan</span><span>out</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="servicos">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>O que a SALT faz</h2>
+      <p>Cada projeto começa pelo que você precisa vender ou organizar. Depois escolhemos a ferramenta certa, sem empurrar plataforma.</p>
+    </div>
+
+    <div class="svc">
+      <article class="svc-row">
+        <div><h3>Loja Nuvemshop</h3><span class="tag">Parceiro especialista</span></div>
+        <p>Loja virtual completa na plataforma mais usada no Brasil: layout com a cara da sua marca, produtos cadastrados, pagamentos e frete configurados.</p>
+        <ul><li>Tema personalizado</li><li>Meios de pagamento e frete</li><li>Treinamento para você gerenciar</li></ul>
+      </article>
+      <article class="svc-row">
+        <div><h3>Loja Shopify</h3><span class="tag">Vendas internacionais</span></div>
+        <p>Para quem vende para fora do Brasil: loja em outras moedas e idiomas, pronta para clientes do mundo todo.</p>
+        <ul><li>Multimoeda e multi-idioma</li><li>Apps e integrações</li><li>Checkout internacional</li></ul>
+      </article>
+      <article class="svc-row">
+        <div><h3>Landing page</h3><span class="tag">Básica ou completa</span></div>
+        <p>Página de anúncio e venda de um produto. A versão básica tem uma tela direta ao ponto; a completa ganha mais seções, provas e detalhes.</p>
+        <ul><li>Pronta para anúncios</li><li>Rápida no celular</li><li>Botão direto para o WhatsApp</li></ul>
+      </article>
+      <article class="svc-row">
+        <div><h3>Leads + mini CRM</h3><span class="tag">Adicional da landing page</span></div>
+        <p>Quem preenche o formulário vai para uma lista organizada: você vê cada contato, marca o status e sabe quem já virou cliente.</p>
+        <ul><li>Formulário de captura</li><li>Lista de contatos por status</li><li>Exportação dos dados</li></ul>
+      </article>
+      <article class="svc-row">
+        <div><h3>Tráfego pago</h3><span class="tag">Meta Ads</span></div>
+        <p>Campanhas no Instagram e Facebook que levam o cliente direto para a conversa no WhatsApp, com acompanhamento do resultado.</p>
+        <ul><li>Campanhas de clique para WhatsApp</li><li>Públicos e criativos</li><li>Otimização da verba</li></ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="sec dev" id="sistemas">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <span class="new">Novo serviço</span>
+        <h2>Sistemas e apps sob medida</h2>
+      </div>
+      <p>Quando planilha e app pronto não resolvem, a SALT desenvolve o sistema do jeito que o seu negócio funciona. Você acessa pelo navegador ou instala no celular como um app.</p>
+    </div>
+
+    <div class="dev-grid">
+      <div>
+        <div class="caps">
+          <div class="cap"><h3>Login e contas</h3><p>Cada usuário entra com e-mail e senha e vê só os próprios dados.</p></div>
+          <div class="cap"><h3>Dados na nuvem</h3><p>Tudo salvo em banco de dados e sincronizado entre celular e computador.</p></div>
+          <div class="cap"><h3>App no celular</h3><p>Instala na tela inicial do iPhone e do Android, com ícone da sua marca.</p></div>
+          <div class="cap"><h3>Painéis e gráficos</h3><p>Números do mês, evolução e relatórios em PDF e Excel.</p></div>
+          <div class="cap"><h3>Integrações</h3><p>Dados externos puxados automaticamente, como cotações e outras APIs.</p></div>
+          <div class="cap"><h3>Pronto para crescer</h3><p>Privacidade, termos de uso e exclusão de conta pensados desde o início.</p></div>
+        </div>
+        <div class="ideas">
+          <h3>Dá para criar, por exemplo</h3>
+          <div class="chips">
+            <span>Agenda e agendamento online</span><span>Controle financeiro</span><span>Painel de vendas e leads</span>
+            <span>Controle de estoque</span><span>Área do cliente</span><span>Simuladores e calculadoras</span>
+          </div>
+        </div>
+      </div>
+
+      <aside class="case" aria-label="Caso: SaltFin">
+        <div class="who">
+          <div class="icon"><img src="img/logo-s-gradiente.png" alt=""></div>
+          <div><b>SALTFIN</b><small>Sistema desenvolvido pela SALT</small></div>
+        </div>
+        <p>App de controle financeiro que nasceu dentro da SALT: simples, visual e no ar, com usuários reais salvando dados na nuvem.</p>
+        <dl>
+          <div><dt>Mês a mês</dt><dd>Entradas, saídas, contas a pagar e a receber.</dd></div>
+          <div><dt>Patrimônio</dt><dd>Evolução acumulada em gráfico.</dd></div>
+          <div><dt>Investimentos</dt><dd>Cotações de ações e FIIs automáticas.</dd></div>
+          <div><dt>Simulador</dt><dd>Aportes mensais com dividendos reinvestidos.</dd></div>
+        </dl>
+        <div class="stack"><span><b>Tema</b> claro e escuro</span><span><b>Login</b> com e-mail</span><span><b>Instalável</b> no celular</span></div>
+        <a class="btn btn-primary" href="https://saltfin.vercel.app" target="_blank" rel="noopener">Abrir o SaltFin</a>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="processo">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Como trabalhamos</h2>
+      <p>Do primeiro papo até o projeto no ar, você sabe em que etapa está e o que vem depois.</p>
+    </div>
+    <ol class="steps">
+      <li><h3>Conversa</h3><p>Entendemos o seu negócio, o que vende e onde está a dor.</p></li>
+      <li><h3>Proposta</h3><p>Escopo, prazo e valor por escrito, sem surpresa no meio.</p></li>
+      <li><h3>Criação</h3><p>Você acompanha e aprova o visual e as funções.</p></li>
+      <li><h3>Publicação</h3><p>Loja, página ou sistema no ar, com treinamento de uso.</p></li>
+      <li><h3>Suporte</h3><p>Ajustes, melhorias e novas funções quando você precisar.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section class="sec contact" id="contato">
+  <div class="wrap contact-grid">
+    <div class="side">
+      <h2>Vamos tirar seu projeto do papel</h2>
+      <p>Conte rapidinho o que você precisa. A mensagem fica pronta para você enviar, e respondemos com os próximos passos.</p>
+      <a class="ig" href="https://instagram.com/salttechsolution" target="_blank" rel="noopener">@salttechsolution</a>
+    </div>
+
+    <form id="form" novalidate>
+      <div class="field">
+        <label for="nome">Seu nome</label>
+        <input id="nome" name="nome" autocomplete="name" placeholder="Como podemos te chamar?">
+      </div>
+      <div class="field">
+        <label for="negocio">Com o que você trabalha</label>
+        <input id="negocio" name="negocio" placeholder="Ex.: moda feminina, salão de beleza, clínica">
+      </div>
+      <fieldset class="field" style="border:0;padding:0;margin:0 0 18px">
+        <legend style="font-size:14px;font-weight:700;margin-bottom:9px;padding:0">O que você precisa</legend>
+        <div class="opts">
+          <label><input type="checkbox" name="servico" value="Loja Nuvemshop" data-txt="loja Nuvemshop"><span>Loja Nuvemshop</span></label>
+          <label><input type="checkbox" name="servico" value="Loja Shopify" data-txt="loja Shopify"><span>Loja Shopify</span></label>
+          <label><input type="checkbox" name="servico" value="Landing page" data-txt="landing page"><span>Landing page</span></label>
+          <label><input type="checkbox" name="servico" value="Captura de leads + mini CRM" data-txt="captura de leads com mini CRM"><span>Leads + mini CRM</span></label>
+          <label><input type="checkbox" name="servico" value="Tráfego pago" data-txt="tráfego pago"><span>Tráfego pago</span></label>
+          <label><input type="checkbox" name="servico" value="Sistema sob medida" data-txt="sistema sob medida"><span>Sistema sob medida</span></label>
+        </div>
+      </fieldset>
+      <div class="field">
+        <label for="msg">Conte um pouco mais</label>
+        <textarea id="msg" name="msg" placeholder="O que você quer resolver? Tem algum prazo?"></textarea>
+      </div>
+      <label for="preview">Sua mensagem</label>
+      <div class="preview" id="preview" aria-live="polite"></div>
+      <div class="send">
+        <a class="btn btn-primary" id="wa" href="#" target="_blank" rel="noopener" hidden>Enviar no WhatsApp</a>
+        <button class="btn btn-ghost" type="button" id="copy">Copiar mensagem</button>
+        <a class="btn btn-ghost" href="https://ig.me/m/salttechsolution" target="_blank" rel="noopener">Abrir direct no Instagram</a>
+      </div>
+      <p class="note" id="note"></p>
+    </form>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <a class="brand" href="#inicio"><img src="img/logo-s-turquesa.png" alt=""><b>SALT TECH SOLUTION</b></a>
+    <span>Lojas virtuais, landing pages, tráfego pago e sistemas sob medida · <a href="https://instagram.com/salttechsolution" target="_blank" rel="noopener">@salttechsolution</a></span>
+  </div>
+</footer>
+
+<script>
+// Coloque aqui o WhatsApp da SALT com DDI e DDD, só números (ex.: "5513999999999").
+// Enquanto estiver vazio, o botão do WhatsApp fica escondido.
+const WHATSAPP = "5513997760432";
+
+const f = document.getElementById('form');
+const pv = document.getElementById('preview');
+const wa = document.getElementById('wa');
+const note = document.getElementById('note');
+
+function montar(){
+  const cap = x => x.charAt(0).toUpperCase() + x.slice(1);
+  const nome = cap(f.nome.value.trim());
+  const neg = f.negocio.value.trim();
+  const svcs = [...f.querySelectorAll('input[name=servico]:checked')].map(i => i.dataset.txt);
+  const msg = f.msg.value.trim();
+  const lista = svcs.length > 1 ? svcs.slice(0, -1).join(', ') + ' e ' + svcs.at(-1) : svcs[0];
+
+  let apres = 'Olá, SALT!';
+  if (nome && neg) apres += ` Meu nome é ${nome} e trabalho com ${neg}.`;
+  else if (nome) apres += ` Meu nome é ${nome}.`;
+  else if (neg) apres += ` Trabalho com ${neg}.`;
+
+  let t = apres + '\n' + (lista ? `Gostaria de um orçamento de ${lista}.` : 'Gostaria de um orçamento.');
+  if (msg) t += `\n\nDetalhes: ${msg}`;
+  return t;
+}
+function atualizar(){
+  const t = montar();
+  pv.textContent = t;
+  if (WHATSAPP) { wa.hidden = false; wa.href = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(t)}`; }
+}
+f.addEventListener('input', atualizar);
+f.addEventListener('submit', e => e.preventDefault());
+document.getElementById('copy').addEventListener('click', async () => {
+  try { await navigator.clipboard.writeText(montar()); note.textContent = 'Mensagem copiada. Cole no WhatsApp ou no direct do Instagram.'; }
+  catch { note.textContent = 'Não foi possível copiar automaticamente. Selecione o texto acima e copie.'; }
+});
+atualizar();
+</script>
+</body>
+</html>
