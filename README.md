@@ -15,3 +15,6 @@ Azul-marinho `#061033`, azul SALT `#0068FF`, turquesa `#2EDDD8`, claro `#EDF1F8`
 
 ## Contato no site
 O número do WhatsApp fica na constante `WHATSAPP`, no fim do `index.html`.
+
+## Como alterar
+Edite os arquivos e envie para a `main`; a Vercel publica em cerca de 1 minuto.
