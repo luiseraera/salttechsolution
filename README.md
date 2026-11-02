@@ -18,3 +18,5 @@ O número do WhatsApp fica na constante `WHATSAPP`, no fim do `index.html`.
 
 ## Como alterar
 Edite os arquivos e envie para a `main`; a Vercel publica em cerca de 1 minuto.
+
+Repositório ligado à Vercel: publicação automática a cada envio para a `main`.
