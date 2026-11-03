@@ -10,7 +10,7 @@ const SUPABASE_KEY = 'sb_publishable_U1SugfBse4bBU5boEsqUBg_v3m7q6CR'; // chave 
 const SMTP_USER = process.env.SMTP_USER || 'contato@salttechsolution.com.br';
 const DESTINO = process.env.CONTATO_DESTINO || 'contato@salttechsolution.com.br';
 
-const SERVICOS = ['Loja Nuvemshop', 'Loja Shopify', 'Landing page', 'Captura de leads + mini CRM', 'Tráfego pago', 'Infraestrutura de TI', 'Sistema sob medida'];
+const SERVICOS = ['Loja Nuvemshop', 'Loja Shopify', 'Landing page', 'Captura de leads + mini CRM', 'Tráfego pago', 'Infraestrutura de TI', 'Suporte de TI mensal', 'Sistema sob medida'];
 const UTM = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
 const porIp = new Map(); // limite simples: até 5 envios por IP a cada 10 min
 
