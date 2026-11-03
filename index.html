@@ -157,6 +157,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--blue-tx)
 .preview{margin-top:6px;background:var(--navy-3);border:1px dashed rgba(255,255,255,.18);border-radius:10px;padding:14px;font-size:14.5px;color:#C9D2EA;white-space:pre-wrap}
 .send{display:flex;flex-wrap:wrap;gap:12px;margin-top:18px}
 .note{margin-top:12px;font-size:13.5px;color:var(--mut);min-height:1.2em}
+.lgpd{margin-top:4px;font-size:12.5px;color:var(--mut);opacity:.8}
 
 footer{padding:34px 0;border-top:1px solid var(--bd);color:var(--mut);font-size:14px}
 footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:center}
@@ -379,9 +380,10 @@ footer .brand img{height:28px}
       <div class="send">
         <a class="btn btn-primary" id="wa" href="#" target="_blank" rel="noopener" hidden>Enviar no WhatsApp</a>
         <button class="btn btn-ghost" type="button" id="copy">Copiar mensagem</button>
-        <a class="btn btn-ghost" href="https://ig.me/m/salttechsolution" target="_blank" rel="noopener">Abrir direct no Instagram</a>
+        <a class="btn btn-ghost" id="ig" href="https://ig.me/m/salttechsolution" target="_blank" rel="noopener">Abrir direct no Instagram</a>
       </div>
       <p class="note" id="note"></p>
+      <p class="lgpd">Ao enviar, a SALT guarda estas informações só para responder ao seu contato.</p>
     </form>
   </div>
 </section>
@@ -398,6 +400,18 @@ footer .brand img{height:28px}
 // Coloque aqui o WhatsApp da SALT com DDI e DDD, só números (ex.: "5513999999999").
 // Enquanto estiver vazio, o botão do WhatsApp fica escondido.
 const WHATSAPP = "5513997760432";
+
+// Supabase (projeto SaltSite): o site só consegue GRAVAR contatos, nunca ler.
+const SUPABASE_URL = "https://mvkbcxbmzhnzrfnhxdjj.supabase.co";
+const SUPABASE_KEY = "sb_publishable_U1SugfBse4bBU5boEsqUBg_v3m7q6CR";
+
+// Origem do visitante (anúncios): guarda os parâmetros utm_* e fbclid da URL.
+const ORIGEM = (() => {
+  const q = new URLSearchParams(location.search), o = {};
+  ['utm_source','utm_medium','utm_campaign','utm_content','utm_term','fbclid'].forEach(k => { const v = q.get(k); if (v) o[k] = v.slice(0, k === 'fbclid' ? 500 : 200); });
+  try { if (Object.keys(o).length) sessionStorage.setItem('salt_origem', JSON.stringify(o)); else return JSON.parse(sessionStorage.getItem('salt_origem') || '{}'); } catch {}
+  return o;
+})();
 
 const f = document.getElementById('form');
 const pv = document.getElementById('preview');
@@ -426,9 +440,31 @@ function atualizar(){
   pv.textContent = t;
   if (WHATSAPP) { wa.hidden = false; wa.href = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(t)}`; }
 }
+let ultimoEnvio = '';
+function salvar(canal){
+  const dados = {
+    nome: f.nome.value.trim().slice(0,120) || null,
+    negocio: f.negocio.value.trim().slice(0,160) || null,
+    servicos: [...f.querySelectorAll('input[name=servico]:checked')].map(i => i.value),
+    mensagem: f.msg.value.trim().slice(0,2000) || null,
+    canal, ...ORIGEM
+  };
+  const chave = JSON.stringify(dados);
+  if (chave === ultimoEnvio) return; // não grava o mesmo contato duas vezes
+  ultimoEnvio = chave;
+  fetch(`${SUPABASE_URL}/rest/v1/contatos`, {
+    method: 'POST', keepalive: true,
+    headers: { apikey: SUPABASE_KEY, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+    body: chave
+  }).catch(() => {});
+}
+wa.addEventListener('click', () => salvar('whatsapp'));
+document.getElementById('ig').addEventListener('click', () => salvar('instagram'));
+
 f.addEventListener('input', atualizar);
 f.addEventListener('submit', e => e.preventDefault());
 document.getElementById('copy').addEventListener('click', async () => {
+  salvar('copiar');
   try { await navigator.clipboard.writeText(montar()); note.textContent = 'Mensagem copiada. Cole no WhatsApp ou no direct do Instagram.'; }
   catch { note.textContent = 'Não foi possível copiar automaticamente. Selecione o texto acima e copie.'; }
 });
