@@ -1,6 +1,6 @@
 # Site da SALT Tech Solution
 
-Site institucional da SALT: lojas Nuvemshop e Shopify, landing pages, leads + mini CRM, tráfego pago e sistemas sob medida.
+Site institucional da SALT: lojas Nuvemshop e Shopify, landing pages, leads + mini CRM, tráfego pago, infraestrutura de TI e sistemas sob medida.
 
 - Publicado na Vercel (projeto `salttechsolution`): https://salttechsolution.com.br (DNS no Registro.br; também em salttechsolution.vercel.app)
 - E-mail oficial: contato@salttechsolution.com.br (Google Workspace)
