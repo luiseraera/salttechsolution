@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Assinatura de e-mail · SALT</title>
+<link rel="icon" href="img/favicon-32.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Saira+Condensed:wght@700&display=swap">
+<style>
+  body{margin:0;background:#EDF1F8;color:#061033;font:400 16px/1.55 Lato,system-ui,-apple-system,'Segoe UI',sans-serif}
+  main{max-width:720px;margin:0 auto;padding:40px 20px 60px}
+  h1{font:700 30px/1.1 'Saira Condensed','Arial Narrow',sans-serif;text-transform:uppercase;margin:0 0 6px}
+  .sub{color:#5B6785;margin:0 0 28px}
+  .card{background:#fff;border:1px solid #D3DBEA;border-radius:14px;padding:28px}
+  .acoes{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+  button{font:700 15px/1 Lato,system-ui,sans-serif;border:0;border-radius:10px;padding:13px 18px;cursor:pointer}
+  .pri{background:#0068FF;color:#fff}
+  .sec{background:#fff;color:#061033;box-shadow:inset 0 0 0 1.5px #D3DBEA}
+  .ok{min-height:1.3em;color:#00807E;font-size:14px;margin-top:10px}
+  h2{font:700 20px/1.2 'Saira Condensed','Arial Narrow',sans-serif;text-transform:uppercase;margin:34px 0 10px}
+  ol{padding-left:20px;margin:0}
+  li{margin-bottom:6px}
+  pre{background:#fff;border:1px solid #D3DBEA;border-radius:10px;padding:14px;font:14px/1.5 ui-monospace,Menlo,Consolas,monospace;white-space:pre-wrap}
+  :focus-visible{outline:2px solid #0068FF;outline-offset:3px}
+</style>
+</head>
+<body>
+<main>
+  <h1>Assinatura de e-mail</h1>
+  <p class="sub">Para usar no contato@salttechsolution.com.br.</p>
+
+  <div class="card">
+    <div id="assinatura">
+<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;font-family:Lato,Arial,Helvetica,sans-serif;color:#061033">
+  <tr>
+    <td style="padding:0 16px 0 0;vertical-align:middle">
+      <a href="https://salttechsolution.com.br" style="text-decoration:none"><img src="https://salttechsolution.com.br/img/logo-salt-email.png" width="92" height="44" alt="SALT" style="display:block;border:0;width:92px;height:44px"></a>
+    </td>
+    <td style="padding:0 0 0 16px;border-left:3px solid #0068FF;vertical-align:middle">
+      <div style="font-size:16px;line-height:20px;font-weight:bold;color:#061033">Luis Carvalho</div>
+      <div style="font-size:13px;line-height:18px;color:#5B6785;padding-bottom:6px">SALT Tech Solution</div>
+      <div style="font-size:13px;line-height:19px;color:#061033">
+        <a href="https://wa.me/5513997760432" style="color:#061033;text-decoration:none">WhatsApp (13) 99776-0432</a>
+        &nbsp;|&nbsp; <a href="mailto:contato@salttechsolution.com.br" style="color:#061033;text-decoration:none">contato@salttechsolution.com.br</a>
+      </div>
+      <div style="font-size:13px;line-height:19px">
+        <a href="https://salttechsolution.com.br" style="color:#0068FF;text-decoration:none;font-weight:bold">salttechsolution.com.br</a>
+        &nbsp;|&nbsp; <a href="https://instagram.com/salttechsolution" style="color:#0068FF;text-decoration:none">@salttechsolution</a>
+      </div>
+      <div style="font-size:12px;line-height:18px;color:#5B6785;padding-top:6px">Lojas virtuais · Landing pages · Tráfego pago · Sistemas sob medida</div>
+    </td>
+  </tr>
+</table>
+    </div>
+    <div class="acoes">
+      <button class="pri" type="button" id="copiar">Copiar assinatura</button>
+      <button class="sec" type="button" id="copiarTexto">Copiar versão em texto (celular)</button>
+    </div>
+    <p class="ok" id="ok" aria-live="polite"></p>
+  </div>
+
+  <h2>Como colocar no Gmail (computador)</h2>
+  <ol>
+    <li>Clique em <b>Copiar assinatura</b>, acima.</li>
+    <li>No Gmail do contato@, abra a engrenagem › <b>Ver todas as configurações</b> › aba <b>Geral</b>.</li>
+    <li>Em <b>Assinatura</b>, clique em <b>Criar nova</b>, dê o nome "SALT" e cole com Ctrl+V (ou Cmd+V no Mac).</li>
+    <li>Logo abaixo, em <b>Padrões de assinatura</b>, escolha "SALT" para <b>novos e-mails</b> e para <b>respostas/encaminhamentos</b>.</li>
+    <li>Role até o fim da página e clique em <b>Salvar alterações</b>.</li>
+  </ol>
+
+  <h2>No app do Gmail no celular</h2>
+  <p>O app só aceita assinatura em texto. Toque em <b>Copiar versão em texto</b>, abra o app › menu › <b>Configurações</b> › conta contato@ › <b>Assinatura para dispositivos móveis</b> e cole.</p>
+  <pre id="texto">Luis Carvalho
+SALT Tech Solution
+WhatsApp (13) 99776-0432 | contato@salttechsolution.com.br
+salttechsolution.com.br | @salttechsolution</pre>
+</main>
+<script>
+const ok = document.getElementById('ok');
+async function copiarHTML(){
+  const el = document.getElementById('assinatura');
+  try {
+    await navigator.clipboard.write([new ClipboardItem({
+      'text/html': new Blob([el.innerHTML], {type: 'text/html'}),
+      'text/plain': new Blob([el.innerText], {type: 'text/plain'})
+    })]);
+  } catch {
+    const r = document.createRange(); r.selectNodeContents(el);
+    const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+    document.execCommand('copy'); s.removeAllRanges();
+  }
+  ok.textContent = 'Assinatura copiada. Agora é só colar no Gmail.';
+}
+async function copiarTexto(){
+  const t = document.getElementById('texto').textContent;
+  try { await navigator.clipboard.writeText(t); ok.textContent = 'Versão em texto copiada.'; }
+  catch { ok.textContent = 'Selecione o texto abaixo e copie manualmente.'; }
+}
+document.getElementById('copiar').addEventListener('click', copiarHTML);
+document.getElementById('copiarTexto').addEventListener('click', copiarTexto);
+</script>
+</body>
+</html>
