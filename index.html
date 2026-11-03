@@ -157,6 +157,11 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--blue-tx)
 .preview{margin-top:6px;background:var(--navy-3);border:1px dashed rgba(255,255,255,.18);border-radius:10px;padding:14px;font-size:14.5px;color:#C9D2EA;white-space:pre-wrap}
 .send{display:flex;flex-wrap:wrap;gap:12px;margin-top:18px}
 .note{margin-top:12px;font-size:13.5px;color:var(--mut);min-height:1.2em}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+label small{font-weight:400;color:var(--mut)}
+input[aria-invalid="true"]{border-color:#FF6B7D;box-shadow:0 0 0 3px rgba(255,107,125,.2)}
+.note.err{color:#FF8A98}
+@media (max-width:560px){.row{grid-template-columns:1fr}}
 .lgpd{margin-top:4px;font-size:12.5px;color:var(--mut);opacity:.8}
 
 footer{padding:34px 0;border-top:1px solid var(--bd);color:var(--mut);font-size:14px}
@@ -354,11 +359,25 @@ footer .brand img{height:28px}
     <form id="form" novalidate>
       <div class="field">
         <label for="nome">Seu nome</label>
-        <input id="nome" name="nome" autocomplete="name" placeholder="Como podemos te chamar?">
+        <input id="nome" name="nome" autocomplete="name" placeholder="Como podemos te chamar?" required maxlength="120">
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="whats">WhatsApp</label>
+          <input id="whats" name="whats" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="(13) 99999-9999" required maxlength="20">
+        </div>
+        <div class="field">
+          <label for="email">E-mail <small>(opcional)</small></label>
+          <input id="email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="voce@email.com" maxlength="200">
+        </div>
+      </div>
+      <div class="field">
+        <label for="rede">Instagram ou site do seu negócio <small>(opcional)</small></label>
+        <input id="rede" name="rede" autocapitalize="off" placeholder="@seunegocio ou seusite.com.br" maxlength="200">
       </div>
       <div class="field">
         <label for="negocio">Com o que você trabalha</label>
-        <input id="negocio" name="negocio" placeholder="Ex.: moda feminina, salão de beleza, clínica">
+        <input id="negocio" name="negocio" maxlength="160" placeholder="Ex.: moda feminina, salão de beleza, clínica">
       </div>
       <fieldset class="field" style="border:0;padding:0;margin:0 0 18px">
         <legend style="font-size:14px;font-weight:700;margin-bottom:9px;padding:0">O que você precisa</legend>
@@ -380,7 +399,6 @@ footer .brand img{height:28px}
       <div class="send">
         <a class="btn btn-primary" id="wa" href="#" target="_blank" rel="noopener" hidden>Enviar no WhatsApp</a>
         <button class="btn btn-ghost" type="button" id="copy">Copiar mensagem</button>
-        <a class="btn btn-ghost" id="ig" href="https://ig.me/m/salttechsolution" target="_blank" rel="noopener">Abrir direct no Instagram</a>
       </div>
       <p class="note" id="note"></p>
       <p class="lgpd">Ao enviar, a SALT guarda estas informações só para responder ao seu contato.</p>
@@ -432,6 +450,8 @@ function montar(){
   else if (neg) apres += ` Trabalho com ${neg}.`;
 
   let t = apres + '\n' + (lista ? `Gostaria de um orçamento de ${lista}.` : 'Gostaria de um orçamento.');
+  const rede = f.rede.value.trim();
+  if (rede) t += `\nMeu Instagram/site: ${rede}`;
   if (msg) t += `\n\nDetalhes: ${msg}`;
   return t;
 }
@@ -440,10 +460,46 @@ function atualizar(){
   pv.textContent = t;
   if (WHATSAPP) { wa.hidden = false; wa.href = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(t)}`; }
 }
+// WhatsApp: só números, com 55 na frente quando vier com DDD (10 ou 11 dígitos).
+function whatsDigitos(){
+  let d = f.whats.value.replace(/\D/g, '');
+  if (d.length === 10 || d.length === 11) d = '55' + d;
+  return d;
+}
+// Formata enquanto digita: (13) 99999-9999
+f.whats.addEventListener('input', () => {
+  const d = f.whats.value.replace(/\D/g, '').slice(0, 11);
+  f.whats.value = d.length > 6 ? `(${d.slice(0,2)}) ${d.slice(2, d.length - 4)}-${d.slice(-4)}` : d.length > 2 ? `(${d.slice(0,2)}) ${d.slice(2)}` : d;
+});
+
+function validar(){
+  const erros = [];
+  const marca = (el, ok) => el.setAttribute('aria-invalid', ok ? 'false' : 'true');
+  const email = f.email.value.trim();
+  const okNome = f.nome.value.trim().length > 1;
+  const w = whatsDigitos(); const okWhats = /^[0-9]{12,15}$/.test(w);
+  const okEmail = !email || /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email);
+  marca(f.nome, okNome); marca(f.whats, okWhats); marca(f.email, okEmail);
+  if (!okNome) erros.push([f.nome, 'seu nome']);
+  if (!okWhats) erros.push([f.whats, 'seu WhatsApp com DDD']);
+  if (!okEmail) erros.push([f.email, 'um e-mail válido (ou deixe em branco)']);
+  if (erros.length){
+    note.className = 'note err';
+    note.textContent = 'Falta preencher ' + erros.map(e => e[1]).join(', ') + '.';
+    erros[0][0].focus();
+    return false;
+  }
+  note.className = 'note'; note.textContent = '';
+  return true;
+}
+
 let ultimoEnvio = '';
 function salvar(canal){
   const dados = {
     nome: f.nome.value.trim().slice(0,120) || null,
+    whatsapp: whatsDigitos() || null,
+    email: f.email.value.trim().slice(0,200) || null,
+    rede_social: f.rede.value.trim().slice(0,200) || null,
     negocio: f.negocio.value.trim().slice(0,160) || null,
     servicos: [...f.querySelectorAll('input[name=servico]:checked')].map(i => i.value),
     mensagem: f.msg.value.trim().slice(0,2000) || null,
@@ -458,14 +514,18 @@ function salvar(canal){
     body: chave
   }).catch(() => {});
 }
-wa.addEventListener('click', () => salvar('whatsapp'));
-document.getElementById('ig').addEventListener('click', () => salvar('instagram'));
+wa.addEventListener('click', e => {
+  if (!validar()) { e.preventDefault(); return; }
+  salvar('whatsapp');
+});
+['nome','whats','email'].forEach(n => f[n].addEventListener('input', () => { if (f[n].getAttribute('aria-invalid') === 'true') f[n].setAttribute('aria-invalid', 'false'); }));
 
 f.addEventListener('input', atualizar);
 f.addEventListener('submit', e => e.preventDefault());
 document.getElementById('copy').addEventListener('click', async () => {
+  if (!validar()) return;
   salvar('copiar');
-  try { await navigator.clipboard.writeText(montar()); note.textContent = 'Mensagem copiada. Cole no WhatsApp ou no direct do Instagram.'; }
+  try { await navigator.clipboard.writeText(montar()); note.textContent = 'Mensagem copiada. Cole no WhatsApp da SALT: (13) 99776-0432.'; }
   catch { note.textContent = 'Não foi possível copiar automaticamente. Selecione o texto acima e copie.'; }
 });
 atualizar();
