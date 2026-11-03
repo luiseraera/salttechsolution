@@ -140,8 +140,11 @@ section{scroll-margin-top:70px}
 .contact-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:56px;align-items:start}
 .contact h2{font-size:clamp(44px,6vw,80px);text-transform:uppercase}
 .contact .side p{color:var(--mut);margin-top:20px;max-width:30em}
-.contact .side a.ig{display:inline-flex;margin-top:26px;font:700 22px/1 var(--fh);letter-spacing:.03em;color:var(--turq);text-decoration:none}
-.contact .side a.ig:hover{text-decoration:underline}
+.canais{list-style:none;margin:30px 0 0;padding:0;display:grid;gap:14px}
+.canais li{display:grid;gap:2px}
+.canais span{font-size:13px;color:var(--mut)}
+.canais a{font:700 22px/1.15 var(--fh);letter-spacing:.02em;color:var(--turq);text-decoration:none;word-break:break-word}
+.canais a:hover{text-decoration:underline}
 form{background:var(--navy-2);border:1px solid var(--bd);border-radius:18px;padding:28px}
 .field{margin-bottom:18px}
 label{display:block;font-size:14px;font-weight:700;margin-bottom:7px}
@@ -353,7 +356,11 @@ footer .brand img{height:28px}
     <div class="side">
       <h2>Vamos tirar seu projeto do papel</h2>
       <p>Conte rapidinho o que você precisa. A mensagem fica pronta para você enviar, e respondemos com os próximos passos.</p>
-      <a class="ig" href="https://instagram.com/salttechsolution" target="_blank" rel="noopener">@salttechsolution</a>
+      <ul class="canais">
+        <li><span>WhatsApp</span><a href="https://wa.me/5513997760432" target="_blank" rel="noopener">(13) 99776-0432</a></li>
+        <li><span>E-mail</span><a href="mailto:contato@salttechsolution.com.br">contato@salttechsolution.com.br</a></li>
+        <li><span>Instagram</span><a href="https://instagram.com/salttechsolution" target="_blank" rel="noopener">@salttechsolution</a></li>
+      </ul>
     </div>
 
     <form id="form" novalidate>
@@ -398,6 +405,7 @@ footer .brand img{height:28px}
       <div class="preview" id="preview" aria-live="polite"></div>
       <div class="send">
         <a class="btn btn-primary" id="wa" href="#" target="_blank" rel="noopener" hidden>Enviar no WhatsApp</a>
+        <a class="btn btn-ghost" id="mail" href="mailto:contato@salttechsolution.com.br">Enviar por e-mail</a>
         <button class="btn btn-ghost" type="button" id="copy">Copiar mensagem</button>
       </div>
       <p class="note" id="note"></p>
@@ -410,7 +418,7 @@ footer .brand img{height:28px}
 <footer>
   <div class="wrap">
     <a class="brand" href="#inicio"><img src="img/logo-salt.png" alt="SALT"><span>Tech Solution</span></a>
-    <span>Lojas virtuais, landing pages, tráfego pago e sistemas sob medida · <a href="https://instagram.com/salttechsolution" target="_blank" rel="noopener">@salttechsolution</a></span>
+    <span>Lojas virtuais, landing pages, tráfego pago e sistemas sob medida · <a href="mailto:contato@salttechsolution.com.br">contato@salttechsolution.com.br</a> · <a href="https://instagram.com/salttechsolution" target="_blank" rel="noopener">@salttechsolution</a></span>
   </div>
 </footer>
 
@@ -435,6 +443,7 @@ const f = document.getElementById('form');
 const pv = document.getElementById('preview');
 const wa = document.getElementById('wa');
 const note = document.getElementById('note');
+const mail = document.getElementById('mail');
 
 function montar(){
   const cap = x => x.charAt(0).toUpperCase() + x.slice(1);
@@ -459,6 +468,9 @@ function atualizar(){
   const t = montar();
   pv.textContent = t;
   if (WHATSAPP) { wa.hidden = false; wa.href = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(t)}`; }
+  const n0 = f.nome.value.trim(), nome = n0.charAt(0).toUpperCase() + n0.slice(1), w = f.whats.value.trim(), em = f.email.value.trim();
+  const assinatura = [nome, w && `WhatsApp: ${w}`, em && `E-mail: ${em}`].filter(Boolean).join('\n');
+  mail.href = `mailto:contato@salttechsolution.com.br?subject=${encodeURIComponent('Orçamento' + (nome ? ' - ' + nome : ''))}&body=${encodeURIComponent(t + (assinatura ? '\n\n' + assinatura : ''))}`;
 }
 // WhatsApp: só números, com 55 na frente quando vier com DDD (10 ou 11 dígitos).
 function whatsDigitos(){
@@ -518,6 +530,10 @@ wa.addEventListener('click', e => {
   if (!validar()) { e.preventDefault(); return; }
   salvar('whatsapp');
 });
+mail.addEventListener('click', e => {
+  if (!validar()) { e.preventDefault(); return; }
+  salvar('email');
+});
 ['nome','whats','email'].forEach(n => f[n].addEventListener('input', () => { if (f[n].getAttribute('aria-invalid') === 'true') f[n].setAttribute('aria-invalid', 'false'); }));
 
 f.addEventListener('input', atualizar);
@@ -525,7 +541,7 @@ f.addEventListener('submit', e => e.preventDefault());
 document.getElementById('copy').addEventListener('click', async () => {
   if (!validar()) return;
   salvar('copiar');
-  try { await navigator.clipboard.writeText(montar()); note.textContent = 'Mensagem copiada. Cole no WhatsApp da SALT: (13) 99776-0432.'; }
+  try { await navigator.clipboard.writeText(montar()); note.textContent = 'Mensagem copiada. Cole no WhatsApp (13) 99776-0432 ou no e-mail contato@salttechsolution.com.br.'; }
   catch { note.textContent = 'Não foi possível copiar automaticamente. Selecione o texto acima e copie.'; }
 });
 atualizar();
