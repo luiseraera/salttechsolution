@@ -39,7 +39,10 @@ module.exports = async function handler(req, res) {
   try { b = await lerCorpo(req); } catch { return responder(res, 400, { erro: 'Dados inválidos.' }); }
 
   // Robôs: campo escondido preenchido ou formulário enviado rápido demais.
-  if (b.site_empresa || (Number(b.t) && Number(b.t) < 2500)) return responder(res, 200, { ok: true });
+  if (b.x_conf || (Number(b.t) && Number(b.t) < 1500)) {
+    console.warn('Descartado como robô', { honeypot: !!b.x_conf, t: b.t });
+    return responder(res, 200, { ok: true });
+  }
 
   const ip = String(req.headers['x-forwarded-for'] || '').split(',')[0].trim() || 'x';
   const agora = Date.now(), reg = porIp.get(ip);

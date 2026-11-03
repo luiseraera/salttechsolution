@@ -160,6 +160,14 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--blue-tx)
 .preview{margin-top:6px;background:var(--navy-3);border:1px dashed rgba(255,255,255,.18);border-radius:10px;padding:14px;font-size:14.5px;color:#C9D2EA;white-space:pre-wrap}
 .send{display:flex;flex-wrap:wrap;gap:12px;margin-top:18px}
 .note{margin-top:12px;font-size:13.5px;color:var(--mut);min-height:1.2em}
+dialog#sucesso{border:1px solid var(--bd);border-radius:20px;padding:34px 30px 28px;max-width:400px;width:calc(100% - 40px);background:var(--navy-2);color:var(--tx);text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.55)}
+dialog#sucesso::backdrop{background:rgba(6,16,51,.72);backdrop-filter:blur(3px)}
+dialog#sucesso[open]{animation:pop .22s cubic-bezier(.2,.8,.2,1)}
+@keyframes pop{from{opacity:0;transform:translateY(8px) scale(.97)}}
+.dlg-ico{width:64px;height:64px;margin:0 auto 16px;border-radius:50%;display:grid;place-items:center;color:#061033;background:linear-gradient(135deg,var(--turq),var(--blue))}
+dialog#sucesso h3{font-size:32px;text-transform:uppercase;margin-bottom:10px}
+dialog#sucesso p{color:#C9D2EA;font-size:16px;margin-bottom:22px}
+dialog#sucesso .btn{width:100%;justify-content:center}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 .note.sucesso{color:var(--turq)}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
@@ -380,7 +388,7 @@ footer .brand img{height:28px}
           <input id="email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="voce@email.com" maxlength="200">
         </div>
       </div>
-      <div class="hp" aria-hidden="true"><label for="site_empresa">Não preencha</label><input id="site_empresa" name="site_empresa" tabindex="-1" autocomplete="off"></div>
+      <div class="hp" aria-hidden="true"><label for="x_conf">Deixe em branco</label><input id="x_conf" name="x_conf" type="text" tabindex="-1" autocomplete="off" data-lpignore="true" data-1p-ignore></div>
       <div class="field">
         <label for="rede">Instagram ou site do seu negócio <small>(opcional)</small></label>
         <input id="rede" name="rede" autocapitalize="off" placeholder="@seunegocio ou seusite.com.br" maxlength="200">
@@ -424,6 +432,13 @@ footer .brand img{height:28px}
     <span>Lojas virtuais, landing pages, tráfego pago e sistemas sob medida · <a href="mailto:contato@salttechsolution.com.br">contato@salttechsolution.com.br</a> · <a href="https://instagram.com/salttechsolution" target="_blank" rel="noopener">@salttechsolution</a></span>
   </div>
 </footer>
+
+<dialog id="sucesso" aria-labelledby="sucesso-titulo">
+  <div class="dlg-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+  <h3 id="sucesso-titulo">Mensagem enviada!</h3>
+  <p id="sucesso-texto"></p>
+  <button type="button" class="btn btn-primary" id="sucesso-ok">Fechar</button>
+</dialog>
 
 <script>
 // Coloque aqui o WhatsApp da SALT com DDI e DDD, só números (ex.: "5513999999999").
@@ -536,6 +551,15 @@ wa.addEventListener('click', e => {
 // "Enviar por e-mail": o site manda direto para o contato@ (api/contato.js).
 // Se o envio direto não estiver disponível, abre o e-mail da pessoa como antes.
 const carregou = Date.now();
+const dlg = document.getElementById('sucesso');
+function abrirSucesso(nome, temEmail){
+  const n = nome.split(' ')[0]; const primeiro = n.charAt(0).toUpperCase() + n.slice(1);
+  document.getElementById('sucesso-texto').textContent =
+    `Obrigado, ${primeiro}! Recebemos sua mensagem e vamos responder em breve pelo seu WhatsApp${temEmail ? ' ou e-mail' : ''}.`;
+  if (dlg.showModal) dlg.showModal();
+}
+document.getElementById('sucesso-ok').addEventListener('click', () => dlg.close());
+dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
 let enviando = false;
 mail.addEventListener('click', async e => {
   e.preventDefault();
@@ -547,7 +571,7 @@ mail.addEventListener('click', async e => {
     nome: f.nome.value.trim(), whatsapp: whatsDigitos(), email: f.email.value.trim(),
     rede_social: f.rede.value.trim(), negocio: f.negocio.value.trim(),
     servicos: [...f.querySelectorAll('input[name=servico]:checked')].map(i => i.value),
-    mensagem: f.msg.value.trim(), site_empresa: f.site_empresa.value, t: Date.now() - carregou, ...ORIGEM
+    mensagem: f.msg.value.trim(), x_conf: f.x_conf.value, t: Date.now() - carregou, ...ORIGEM
   };
   let r = null;
   try { r = await fetch('/api/contato', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dados) }); } catch {}
@@ -555,7 +579,8 @@ mail.addEventListener('click', async e => {
   if (r && r.ok) {
     mail.textContent = 'Mensagem enviada';
     note.className = 'note sucesso';
-    note.textContent = 'Recebemos sua mensagem. Vamos responder pelo seu WhatsApp' + (dados.email ? ' ou e-mail' : '') + ' em breve.';
+    note.textContent = 'Mensagem enviada.';
+    abrirSucesso(dados.nome, !!dados.email);
     return;
   }
   mail.textContent = textoBotao;
