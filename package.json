@@ -1,0 +1,8 @@
+{
+  "name": "salttechsolution",
+  "private": true,
+  "description": "Site da SALT Tech Solution",
+  "dependencies": {
+    "nodemailer": "^10.3.1"
+  }
+}

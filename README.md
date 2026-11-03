@@ -26,3 +26,9 @@ Repositório ligado à Vercel: publicação automática a cada envio para a `mai
 Cada clique em "Enviar no WhatsApp", "Enviar por e-mail" ou "Copiar mensagem" grava o contato (nome e WhatsApp obrigatórios; e-mail e Instagram/site opcionais) na tabela `contatos` do projeto **SaltSite** no Supabase, junto com a origem do anúncio (`utm_*` e `fbclid`, quando vierem no link).
 - O site só tem permissão de **gravar**: ninguém consegue ler os contatos pelo site.
 - Para ver: Supabase > SaltSite > Table Editor > `contatos`. A coluna `status` (novo, em conversa, proposta enviada, fechado, perdido) e `observacoes` servem de mini CRM.
+
+## Envio direto por e-mail (`api/contato.js`)
+O botão "Enviar por e-mail" manda a mensagem direto para contato@salttechsolution.com.br, sem abrir o e-mail da pessoa, e salva o contato no Supabase.
+- Usa o SMTP do Google Workspace com uma **senha de app** da conta contato@, guardada na variável de ambiente `SMTP_PASS` da Vercel (projeto `salttechsolution`).
+- Sem `SMTP_PASS`, o botão volta ao comportamento antigo (abre o e-mail com a mensagem pronta).
+- Proteções: campo escondido contra robôs, tempo mínimo de preenchimento e limite de 5 envios por IP a cada 10 minutos.

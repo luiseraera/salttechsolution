@@ -160,6 +160,8 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--blue-tx)
 .preview{margin-top:6px;background:var(--navy-3);border:1px dashed rgba(255,255,255,.18);border-radius:10px;padding:14px;font-size:14.5px;color:#C9D2EA;white-space:pre-wrap}
 .send{display:flex;flex-wrap:wrap;gap:12px;margin-top:18px}
 .note{margin-top:12px;font-size:13.5px;color:var(--mut);min-height:1.2em}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.note.sucesso{color:var(--turq)}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
 label small{font-weight:400;color:var(--mut)}
 input[aria-invalid="true"]{border-color:#FF6B7D;box-shadow:0 0 0 3px rgba(255,107,125,.2)}
@@ -378,6 +380,7 @@ footer .brand img{height:28px}
           <input id="email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="voce@email.com" maxlength="200">
         </div>
       </div>
+      <div class="hp" aria-hidden="true"><label for="site_empresa">Não preencha</label><input id="site_empresa" name="site_empresa" tabindex="-1" autocomplete="off"></div>
       <div class="field">
         <label for="rede">Instagram ou site do seu negócio <small>(opcional)</small></label>
         <input id="rede" name="rede" autocapitalize="off" placeholder="@seunegocio ou seusite.com.br" maxlength="200">
@@ -530,9 +533,40 @@ wa.addEventListener('click', e => {
   if (!validar()) { e.preventDefault(); return; }
   salvar('whatsapp');
 });
-mail.addEventListener('click', e => {
-  if (!validar()) { e.preventDefault(); return; }
+// "Enviar por e-mail": o site manda direto para o contato@ (api/contato.js).
+// Se o envio direto não estiver disponível, abre o e-mail da pessoa como antes.
+const carregou = Date.now();
+let enviando = false;
+mail.addEventListener('click', async e => {
+  e.preventDefault();
+  if (enviando || !validar()) return;
+  enviando = true;
+  const textoBotao = mail.textContent;
+  mail.textContent = 'Enviando...'; mail.setAttribute('aria-disabled', 'true');
+  const dados = {
+    nome: f.nome.value.trim(), whatsapp: whatsDigitos(), email: f.email.value.trim(),
+    rede_social: f.rede.value.trim(), negocio: f.negocio.value.trim(),
+    servicos: [...f.querySelectorAll('input[name=servico]:checked')].map(i => i.value),
+    mensagem: f.msg.value.trim(), site_empresa: f.site_empresa.value, t: Date.now() - carregou, ...ORIGEM
+  };
+  let r = null;
+  try { r = await fetch('/api/contato', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dados) }); } catch {}
+  enviando = false; mail.removeAttribute('aria-disabled');
+  if (r && r.ok) {
+    mail.textContent = 'Mensagem enviada';
+    note.className = 'note sucesso';
+    note.textContent = 'Recebemos sua mensagem. Vamos responder pelo seu WhatsApp' + (dados.email ? ' ou e-mail' : '') + ' em breve.';
+    return;
+  }
+  mail.textContent = textoBotao;
+  if (r && (r.status === 400 || r.status === 429)) {
+    const j = await r.json().catch(() => ({}));
+    note.className = 'note err'; note.textContent = j.erro || 'Confira os dados e tente de novo.';
+    return;
+  }
+  // Plano B: abre o e-mail com a mensagem pronta.
   salvar('email');
+  location.href = mail.href;
 });
 ['nome','whats','email'].forEach(n => f[n].addEventListener('input', () => { if (f[n].getAttribute('aria-invalid') === 'true') f[n].setAttribute('aria-invalid', 'false'); }));
 
