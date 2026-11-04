@@ -81,7 +81,7 @@ p{margin:0}
 .mark .s{position:absolute;right:6%;top:0;height:100%;width:auto;filter:drop-shadow(0 30px 60px rgba(0,104,255,.35))}
 .panel{position:absolute;left:0;bottom:36px;width:300px;background:var(--navy-2);border:1px solid var(--bd);border-radius:16px;padding:18px 18px 16px;box-shadow:0 24px 50px rgba(0,0,0,.45)}
 .panel .hd{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;color:var(--mut)}
-.panel .hd b{font:700 18px/1 var(--fh);color:var(--tx);letter-spacing:.03em}
+.panel .hd img{height:15px;width:auto}
 .panel .val{font:700 34px/1.1 var(--fh);margin:10px 0 2px}
 .panel .delta{font-size:13px;color:var(--turq)}
 .bars{display:flex;align-items:flex-end;gap:7px;height:78px;margin-top:14px}
@@ -125,9 +125,8 @@ section{scroll-margin-top:70px}
 .case{background:var(--navy);color:var(--tx);border-radius:22px;padding:34px;position:relative;overflow:hidden}
 .case::after{content:"";position:absolute;right:-80px;top:-80px;width:260px;height:260px;background:radial-gradient(closest-side,rgba(0,104,255,.35),transparent)}
 .case .who{display:flex;gap:16px;align-items:center;position:relative}
-.case .icon{width:64px;height:64px;border-radius:16px;background:#fff;display:grid;place-items:center}
-.case .icon img{height:40px}
-.case .who b{display:block;font:700 34px/1 var(--fh);letter-spacing:.03em}
+.case .app-icon{width:72px;height:72px;border-radius:17px;box-shadow:0 0 0 1px rgba(255,255,255,.14),0 10px 24px rgba(0,0,0,.35)}
+.case .app-logo{height:30px;width:auto;margin-bottom:6px}
 .case .who small{color:var(--mut);font-size:14px}
 .case > p{margin-top:22px;color:#C9D2EA}
 .case dl{margin:24px 0 0;display:grid;grid-template-columns:1fr 1fr;gap:16px 20px}
@@ -256,7 +255,7 @@ footer .brand img{height:28px}
     <div class="mark" aria-hidden="true">
       <img class="s" src="img/s-gradiente.png" alt="">
       <div class="panel">
-        <div class="hd"><b>SALTFIN</b><span>Patrimônio · 2026</span></div>
+        <div class="hd"><img src="img/saltfin-logo.svg" alt="SaltFin"><span>Patrimônio · 2026</span></div>
         <div class="val">R$ 48.320</div>
         <div class="delta">+ R$ 2.140 este mês</div>
         <div class="bars">
@@ -344,18 +343,18 @@ footer .brand img{height:28px}
 
       <aside class="case" aria-label="Caso: SaltFin">
         <div class="who">
-          <div class="icon"><img src="img/s-gradiente.png" alt=""></div>
-          <div><b>SALTFIN</b><small>Sistema desenvolvido pela SALT</small></div>
+          <img class="app-icon" src="img/saltfin-icon.png" width="72" height="72" alt="">
+          <div><img class="app-logo" src="img/saltfin-logo.svg" alt="SaltFin"><small>Sistema desenvolvido pela SALT</small></div>
         </div>
         <p>App de controle financeiro que nasceu dentro da SALT: simples, visual e no ar, com usuários reais salvando dados na nuvem.</p>
         <dl>
-          <div><dt>Mês a mês</dt><dd>Entradas, saídas, contas a pagar e a receber.</dd></div>
-          <div><dt>Patrimônio</dt><dd>Evolução acumulada em gráfico.</dd></div>
-          <div><dt>Investimentos</dt><dd>Cotações de ações e FIIs automáticas.</dd></div>
-          <div><dt>Simulador</dt><dd>Aportes mensais com dividendos reinvestidos.</dd></div>
+          <div><dt>Mês a mês</dt><dd>Entradas, saídas, contas a pagar e importação do extrato do banco.</dd></div>
+          <div><dt>Investimentos</dt><dd>Carteira com cotações automáticas e agenda de proventos.</dd></div>
+          <div><dt>Simulador</dt><dd>Aportes, dividendos reinvestidos e inflação, rumo à independência financeira.</dd></div>
+          <div><dt>Custo de vida</dt><dd>Inflação pessoal, preços do dia a dia e etanol × gasolina.</dd></div>
         </dl>
-        <div class="stack"><span><b>Tema</b> claro e escuro</span><span><b>Login</b> com e-mail</span><span><b>Instalável</b> no celular</span></div>
-        <a class="btn btn-primary" href="https://saltfin.vercel.app" target="_blank" rel="noopener">Abrir o SaltFin</a>
+        <div class="stack"><span><b>Login</b> com e-mail ou Google</span><span><b>Sincroniza</b> entre aparelhos</span><span><b>Tema</b> claro e escuro</span><span><b>Instalável</b> no celular</span></div>
+        <a class="btn btn-primary" href="https://saltfin.salttechsolution.com.br" target="_blank" rel="noopener">Abrir o SaltFin</a>
       </aside>
     </div>
   </div>
