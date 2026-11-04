@@ -5,7 +5,7 @@
    - Para reabrir: qualquer link com data-cookies="abrir" (ex.: "Preferências de cookies" no rodapé).
    - Enquanto GA_ID estiver vazio, não há cookies opcionais e o banner não aparece. */
 (function () {
-  var GA_ID = ''; // ID de medição do Google Analytics 4, ex.: 'G-ABC123XYZ'
+  var GA_ID = 'G-K1LGJRSK7P'; // ID de medição do Google Analytics 4, ex.: 'G-ABC123XYZ'
   var CHAVE = 'salt_cookies';
   var VERSAO = 1;
   var VALIDADE = 365 * 24 * 60 * 60 * 1000;
