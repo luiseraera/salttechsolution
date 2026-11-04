@@ -32,3 +32,9 @@ O botão "Enviar por e-mail" manda a mensagem direto para contato@salttechsoluti
 - Usa o SMTP do Google Workspace com uma **senha de app** da conta contato@, guardada na variável de ambiente `SMTP_PASS` da Vercel (projeto `salttechsolution`).
 - Sem `SMTP_PASS`, o botão volta ao comportamento antigo (abre o e-mail com a mensagem pronta).
 - Proteções: campo escondido contra robôs, tempo mínimo de preenchimento e limite de 5 envios por IP a cada 10 minutos.
+
+## Privacidade, cookies e Google Analytics
+- `privacidade.html`: Política de Privacidade do site (link no rodapé e embaixo do formulário).
+- `cookies.js`: banner de cookies com "Aceitar" e "Recusar" do mesmo peso. O Google Analytics só carrega depois do "Aceitar". A escolha vale 12 meses e pode ser mudada em "Preferências de cookies" (rodapé).
+- O ID do Google Analytics fica na constante `GA_ID`, no início do `cookies.js`. Vazio = sem banner e sem Analytics.
+- Eventos enviados ao Analytics: `generate_lead` (method: whatsapp ou email) quando alguém envia o formulário.
