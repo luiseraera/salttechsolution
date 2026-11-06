@@ -255,16 +255,16 @@ footer .brand img{height:28px}
     <div class="mark" aria-hidden="true">
       <img class="s" src="img/s-gradiente.png" alt="">
       <div class="panel">
-        <div class="hd"><img src="img/saltfin-logo.svg" alt="SaltFin"><span>Patrimônio · 2026</span></div>
+        <div class="hd"><img src="img/saltfin-logo.svg" alt="SaltFin"><span>Patrimônio · 12 meses</span></div>
         <div class="val">R$ 48.320</div>
         <div class="delta">+ R$ 2.140 este mês</div>
         <div class="bars">
-          <span style="--h:28%;--i:0"></span><span style="--h:34%;--i:1"></span><span style="--h:31%;--i:2"></span>
-          <span style="--h:45%;--i:3"></span><span style="--h:52%;--i:4"></span><span style="--h:49%;--i:5"></span>
-          <span style="--h:63%;--i:6"></span><span style="--h:71%;--i:7"></span><span style="--h:78%;--i:8"></span>
-          <span style="--h:92%;--i:9"></span>
+          <span style="--h:24%;--i:0"></span><span style="--h:29%;--i:1"></span><span style="--h:27%;--i:2"></span>
+          <span style="--h:36%;--i:3"></span><span style="--h:42%;--i:4"></span><span style="--h:40%;--i:5"></span>
+          <span style="--h:51%;--i:6"></span><span style="--h:58%;--i:7"></span><span style="--h:64%;--i:8"></span>
+          <span style="--h:73%;--i:9"></span><span style="--h:82%;--i:10"></span><span style="--h:94%;--i:11"></span>
         </div>
-        <div class="ft"><span>jan</span><span>out</span></div>
+        <div class="ft"><span id="mes-ini">dez</span><span id="mes-fim">nov</span></div>
       </div>
     </div>
   </div>
@@ -458,6 +458,14 @@ footer .brand img{height:28px}
 </dialog>
 
 <script>
+// Gráfico ilustrativo do SaltFin: últimos 12 meses até o mês atual.
+(() => {
+  const m = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+  const hoje = new Date().getMonth();
+  document.getElementById('mes-fim').textContent = m[hoje];
+  document.getElementById('mes-ini').textContent = m[(hoje + 1) % 12];
+})();
+
 // Coloque aqui o WhatsApp da SALT com DDI e DDD, só números (ex.: "5513999999999").
 // Enquanto estiver vazio, o botão do WhatsApp fica escondido.
 const WHATSAPP = "5513997760432";
