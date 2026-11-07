@@ -40,7 +40,7 @@ O botão "Enviar por e-mail" manda a mensagem direto para contato@salttechsoluti
 - Eventos enviados ao Analytics: `generate_lead` (method: whatsapp ou email) quando alguém envia o formulário.
 
 ## Página de links (`links/index.html`)
-Página para a bio do Instagram: **salttechsolution.com.br/links/?utm_source=instagram&utm_medium=bio**.
+Página para a bio do Instagram: **salttechsolution.com.br/links/?utm_source=instagram&utm_medium=bio** (atalho para a bio: **salttechsolution.com.br/ig**, configurado no `vercel.json`).
 - O WhatsApp fica na constante `WHATSAPP` dentro de `links/index.html` (troque junto com a do `index.html`).
 - A mensagem do WhatsApp e o assunto do e-mail levam a origem e um código curto, ex.: "Vim pelo Instagram… (ref: IG-BIO)". O código vem dos parâmetros `utm_*` do link (ex.: `?utm_source=meta&utm_medium=ads&utm_campaign=blackfriday` → `META-ADS-BLACKFRIDAY`).
 - Os botões que levam ao site repassam os `utm_*`, então o formulário do site grava a origem no contato.

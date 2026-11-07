@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    {
+      "source": "/ig",
+      "destination": "/links/?utm_source=instagram&utm_medium=bio",
+      "permanent": false
+    }
+  ]
+}
