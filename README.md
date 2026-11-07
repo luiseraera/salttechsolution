@@ -38,3 +38,10 @@ O botão "Enviar por e-mail" manda a mensagem direto para contato@salttechsoluti
 - `cookies.js`: banner de cookies com "Aceitar" e "Recusar" do mesmo peso. O Google Analytics só carrega depois do "Aceitar". A escolha vale 12 meses e pode ser mudada em "Preferências de cookies" (rodapé).
 - O ID do Google Analytics fica na constante `GA_ID`, no início do `cookies.js`. Vazio = sem banner e sem Analytics.
 - Eventos enviados ao Analytics: `generate_lead` (method: whatsapp ou email) quando alguém envia o formulário.
+
+## Página de links (`links/index.html`)
+Página para a bio do Instagram: **salttechsolution.com.br/links/?utm_source=instagram&utm_medium=bio**.
+- O WhatsApp fica na constante `WHATSAPP` dentro de `links/index.html` (troque junto com a do `index.html`).
+- A mensagem do WhatsApp e o assunto do e-mail levam a origem e um código curto, ex.: "Vim pelo Instagram… (ref: IG-BIO)". O código vem dos parâmetros `utm_*` do link (ex.: `?utm_source=meta&utm_medium=ads&utm_campaign=blackfriday` → `META-ADS-BLACKFRIDAY`).
+- Os botões que levam ao site repassam os `utm_*`, então o formulário do site grava a origem no contato.
+- Cada clique é gravado na tabela `cliques` do Supabase SaltSite (botão, origem, código, celular/computador). O site só grava; para ver: Supabase > SaltSite > Table Editor > `cliques`.
