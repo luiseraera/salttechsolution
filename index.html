@@ -563,17 +563,30 @@ function salvar(canal){
     canal, ...ORIGEM
   };
   const chave = JSON.stringify(dados);
-  if (chave === ultimoEnvio) return; // não grava o mesmo contato duas vezes
+  if (chave === ultimoEnvio) return false; // não grava o mesmo contato duas vezes
   ultimoEnvio = chave;
   fetch(`${SUPABASE_URL}/rest/v1/contatos`, {
     method: 'POST', keepalive: true,
     headers: { apikey: SUPABASE_KEY, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
     body: chave
   }).catch(() => {});
+  return dados;
+}
+// Aviso por e-mail para o contato@ quando a pessoa escolhe o WhatsApp
+// (assim o contato não se perde se ela desistir de enviar a mensagem).
+function avisarPorEmail(dados){
+  try {
+    fetch('/api/contato', {
+      method: 'POST', keepalive: true,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...dados, so_avisar: true, x_conf: f.x_conf.value, t: Date.now() - carregou })
+    }).catch(() => {});
+  } catch {}
 }
 wa.addEventListener('click', e => {
   if (!validar()) { e.preventDefault(); return; }
-  salvar('whatsapp');
+  const salvo = salvar('whatsapp');
+  if (salvo) avisarPorEmail(salvo);
   if (window.saltTrack) saltTrack('generate_lead', { method: 'whatsapp' });
 });
 // "Enviar por e-mail": o site manda direto para o contato@ (api/contato.js).

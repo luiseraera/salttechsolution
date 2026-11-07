@@ -1,5 +1,7 @@
 // Recebe o formulário do site, salva o contato no Supabase (projeto SaltSite)
 // e envia um aviso por e-mail para contato@salttechsolution.com.br.
+// Com so_avisar: true (clique no botão do WhatsApp), o site já salvou o contato:
+// aqui só manda o aviso por e-mail, sem gravar de novo.
 // A senha de app do Google fica só no servidor, na variável de ambiente SMTP_PASS da Vercel.
 // Sem SMTP_PASS configurada, responde 503 e o site volta a abrir o e-mail como antes.
 
@@ -59,7 +61,7 @@ module.exports = async function handler(req, res) {
     negocio: txt(b.negocio, 160),
     servicos: Array.isArray(b.servicos) ? b.servicos.filter(s => SERVICOS.includes(s)) : [],
     mensagem: txt(b.mensagem, 2000),
-    canal: 'email',
+    canal: b.so_avisar ? 'whatsapp' : 'email',
     fbclid: txt(b.fbclid, 500)
   };
   UTM.forEach(k => { dados[k] = txt(b[k], 200); });
@@ -67,7 +69,7 @@ module.exports = async function handler(req, res) {
   if (!dados.nome || !dados.whatsapp) return responder(res, 400, { erro: 'Preencha seu nome e WhatsApp com DDD.' });
 
   // 1) Salva no Supabase (se falhar, ainda manda o e-mail para o contato não se perder).
-  try {
+  if (!b.so_avisar) try {
     const r = await fetch(`${SUPABASE_URL}/rest/v1/contatos`, {
       method: 'POST',
       headers: { apikey: SUPABASE_KEY, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
@@ -89,14 +91,16 @@ module.exports = async function handler(req, res) {
     ['Mensagem', dados.mensagem],
     ['Origem', [dados.utm_source, dados.utm_campaign, dados.utm_content].filter(Boolean).join(' / ')]
   ].filter(l => l[1]);
+  const viaWhats = dados.canal === 'whatsapp';
+  const aviso = viaWhats ? 'A pessoa clicou em "Enviar pelo WhatsApp". Confira se a mensagem chegou no WhatsApp; se não chegou, chame você.' : '';
 
   const html = `<div style="font-family:Arial,Helvetica,sans-serif;color:#061033;font-size:14px;line-height:1.5">
-<p style="font-size:16px;margin:0 0 12px"><b>Novo contato pelo site da SALT</b></p>
+<p style="font-size:16px;margin:0 0 12px"><b>Novo contato pelo site da SALT${viaWhats ? ' (via WhatsApp)' : ''}</b></p>${aviso ? `<p style="margin:0 0 12px;color:#5B6785">${esc(aviso)}</p>` : ''}
 <table cellpadding="6" cellspacing="0" style="border-collapse:collapse">${linhas.map(([k, v]) =>
     `<tr><td style="color:#5B6785;vertical-align:top;padding-right:14px">${esc(k)}</td><td style="white-space:pre-wrap">${esc(v)}</td></tr>`).join('')}</table>
 <p style="margin:16px 0 0"><a href="https://wa.me/${w}" style="background:#0068FF;color:#fff;text-decoration:none;padding:10px 16px;border-radius:8px;display:inline-block;font-weight:bold">Responder no WhatsApp</a></p>
 </div>`;
-  const texto = linhas.map(([k, v]) => `${k}: ${v}`).join('\n') + `\n\nResponder no WhatsApp: https://wa.me/${w}`;
+  const texto = (aviso ? aviso + '\n\n' : '') + linhas.map(([k, v]) => `${k}: ${v}`).join('\n') + `\n\nResponder no WhatsApp: https://wa.me/${w}`;
 
   try {
     const smtp = nodemailer.createTransport({ host: 'smtp.gmail.com', port: 465, secure: true, auth: { user: SMTP_USER, pass: process.env.SMTP_PASS } });
@@ -104,7 +108,7 @@ module.exports = async function handler(req, res) {
       from: `"Site SALT" <${SMTP_USER}>`,
       to: DESTINO,
       replyTo: dados.email ? `"${dados.nome.replace(/"/g, '')}" <${dados.email}>` : undefined,
-      subject: `Novo contato pelo site: ${dados.nome}${dados.servicos.length ? ' (' + dados.servicos.join(', ') + ')' : ''}`,
+      subject: `${viaWhats ? '[WhatsApp] ' : ''}Novo contato pelo site: ${dados.nome}${dados.servicos.length ? ' (' + dados.servicos.join(', ') + ')' : ''}`,
       text: texto,
       html
     });
