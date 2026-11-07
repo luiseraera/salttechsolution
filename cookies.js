@@ -7,7 +7,7 @@
    - O evento generate_lead do Analytics também vira o evento Lead no Pixel do Meta. */
 (function () {
   var GA_ID = 'G-K1LGJRSK7P'; // ID de medição do Google Analytics 4, ex.: 'G-ABC123XYZ'
-  var META_PIXEL_ID = '1107873522078232'; // ID do Pixel do Meta (só números), ex.: '123456789012345'
+  var META_PIXEL_ID = '2152897256102425'; // ID do Pixel do Meta (só números), ex.: '123456789012345'
   var CHAVE = 'salt_cookies';
   var VERSAO = 2; // 2: consentimento passou a incluir o Pixel do Meta (o banner aparece de novo para todos)
   var VALIDADE = 365 * 24 * 60 * 60 * 1000;
