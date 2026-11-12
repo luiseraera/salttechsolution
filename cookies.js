@@ -4,10 +4,15 @@
    - A escolha fica salva no navegador por 12 meses; depois o banner aparece de novo.
    - Para reabrir: qualquer link com data-cookies="abrir" (ex.: "Preferências de cookies" no rodapé).
    - Enquanto GA_ID e META_PIXEL_ID estiverem vazios, não há cookies opcionais e o banner não aparece.
-   - O evento generate_lead do Analytics também vira o evento Lead no Pixel do Meta. */
+   - O evento generate_lead do Analytics também vira o evento Lead no Pixel do Meta.
+   - Contador anônimo de visitas (sem cookies, sem IP, sem dado pessoal): grava no Supabase SaltSite,
+     tabela visitas, cada visita (página, UTMs, tipo de aparelho) e a escolha no aviso de cookies,
+     ligadas só por um código aleatório que vive enquanto a página está aberta. */
 (function () {
   var GA_ID = 'G-K1LGJRSK7P'; // ID de medição do Google Analytics 4, ex.: 'G-ABC123XYZ'
   var META_PIXEL_ID = '2152897256102425'; // ID do Pixel do Meta (só números), ex.: '123456789012345'
+  var SB_URL = 'https://mvkbcxbmzhnzrfnhxdjj.supabase.co';
+  var SB_KEY = 'sb_publishable_U1SugfBse4bBU5boEsqUBg_v3m7q6CR'; // chave pública: só grava
   var CHAVE = 'salt_cookies';
   var VERSAO = 2; // 2: consentimento passou a incluir o Pixel do Meta (o banner aparece de novo para todos)
   var VALIDADE = 365 * 24 * 60 * 60 * 1000;
@@ -36,6 +41,39 @@
     s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GA_ID);
     document.head.appendChild(s);
   }
+  // ---- Contador anônimo de visitas ----
+  var VISITA_ID = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : (Date.now().toString(36) + Math.random().toString(36).slice(2));
+  var estadoInicial = 'novo';
+  function origemVisita() {
+    var o = {}, q;
+    try { q = new URLSearchParams(location.search); } catch (e) { q = null; }
+    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'].forEach(function (k) {
+      var v = q && q.get(k); if (v) o[k] = v.slice(0, 200);
+    });
+    if (!Object.keys(o).length) {
+      try { var s = JSON.parse(sessionStorage.getItem('salt_origem') || '{}');
+        ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'].forEach(function (k) { if (s[k]) o[k] = String(s[k]).slice(0, 200); });
+      } catch (e) {}
+    }
+    return o;
+  }
+  function registrarVisita(evento) {
+    try {
+      if (!/(^|\.)salttechsolution\.com\.br$/.test(location.hostname)) return; // só no site oficial
+      var d = origemVisita();
+      d.visita_id = VISITA_ID;
+      d.evento = evento;
+      d.pagina = (location.pathname || '/').slice(0, 100);
+      d.dispositivo = /iPad|Tablet/i.test(navigator.userAgent) ? 'tablet' : (/Mobi|Android|iPhone/i.test(navigator.userAgent) ? 'celular' : 'computador');
+      d.estado_inicial = estadoInicial;
+      fetch(SB_URL + '/rest/v1/visitas', {
+        method: 'POST', keepalive: true,
+        headers: { apikey: SB_KEY, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+        body: JSON.stringify(d)
+      }).catch(function () {});
+    } catch (e) {}
+  }
+
   var pixelCarregado = false;
   function carregarPixel() {
     if (!META_PIXEL_ID || pixelCarregado) return;
@@ -101,6 +139,7 @@
       if (!esc) return;
       var aceito = esc === 'aceitar';
       salvar(aceito);
+      registrarVisita(aceito ? 'aceitou' : 'recusou');
       b.remove();
       if (aceito) carregarOpcionais();
       else { apagarCookiesGA(); if (gaCarregado || pixelCarregado) location.reload(); }
@@ -110,6 +149,8 @@
 
   function iniciar() {
     var c = ler();
+    estadoInicial = c ? (c.analytics ? 'ja_aceitou' : 'ja_recusou') : 'novo';
+    registrarVisita('visita');
     if (c && c.analytics) carregarOpcionais();
     else if (!c) mostrarBanner();
     document.addEventListener('click', function (e) {
