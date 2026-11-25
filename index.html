@@ -55,6 +55,9 @@ p{margin:0}
 .btn-ghost:hover{box-shadow:inset 0 0 0 1.5px var(--turq);color:var(--turq)}
 
 /* Topo */
+.promo{background:linear-gradient(90deg,#0068FF,#1FB8D6);color:#fff;text-align:center;font:400 14.5px/1.35 var(--fb);padding:9px 16px}
+.promo b{font-weight:700}
+.promo a{color:#fff;font-weight:700;text-decoration:underline;text-underline-offset:3px;white-space:nowrap}
 .top{position:sticky;top:0;z-index:5;background:rgba(6,16,51,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--bd)}
 .top .wrap{display:flex;align-items:center;justify-content:space-between;height:68px}
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none}
@@ -223,6 +226,9 @@ footer .brand img{height:28px}
 </head>
 <body>
 <a class="skip" href="#conteudo">Pular para o conteúdo</a>
+<!-- Faixa da Black Friday: aparece só até 06/12/2026 (o script abaixo esconde depois). -->
+<div class="promo" id="promo-bf" hidden><b>Black Friday SALT:</b> feche a gestão de tráfego pago até 06/12 e ganhe a landing page dos seus anúncios. <a href="#contato" id="promo-bf-link">Quero minha vaga</a></div>
+<script>(function(){var el=document.getElementById('promo-bf');if(Date.now()<Date.parse('2026-12-07T00:00:00-03:00')){el.hidden=false;document.getElementById('promo-bf-link').addEventListener('click',function(){var c=document.querySelector('input[name=servico][value="Tráfego pago"]');if(c&&!c.checked){c.checked=true;c.dispatchEvent(new Event('change',{bubbles:true}));}});}})();</script>
 
 <header class="top">
   <div class="wrap">
