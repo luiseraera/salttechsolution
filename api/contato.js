@@ -62,7 +62,8 @@ module.exports = async function handler(req, res) {
     servicos: Array.isArray(b.servicos) ? b.servicos.filter(s => SERVICOS.includes(s)) : [],
     mensagem: txt(b.mensagem, 2000),
     canal: b.so_avisar ? 'whatsapp' : 'email',
-    fbclid: txt(b.fbclid, 500)
+    fbclid: txt(b.fbclid, 500),
+    gclid: txt(b.gclid, 500)
   };
   UTM.forEach(k => { dados[k] = txt(b[k], 200); });
   if (dados.email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(dados.email)) dados.email = null;

@@ -464,12 +464,13 @@ const mareHTML = p => `<div class="mare"><i style="width:${p}%"></i></div>`;
 const tempHTML = t => `<span class="temp ${t || ''}" title="${t ? TEMPS[t] : 'Sem temperatura'}"></span>`;
 function toast(msg, ms = 2600) { const t = $('#toast'); t.textContent = msg; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => t.hidden = true, ms); }
 
-function ehAnuncio(l) { const s = (l.utm_source || '').toLowerCase(); return l.origem === 'site' && ['meta','facebook','fb','google'].includes(s); }
+function ehAnuncio(l) { const s = (l.utm_source || '').toLowerCase(); return l.origem === 'site' && (['meta','facebook','fb','google'].includes(s) || !!l.gclid || !!l.fbclid); }
 function origemTxt(l) {
   if (l.origem === 'site') {
     const s = (l.utm_source || '').toLowerCase();
     if (['meta','facebook','fb'].includes(s)) return 'Anúncio Meta';
-    if (s === 'google') return 'Google';
+    if (s === 'google' || (!s && l.gclid)) return 'Anúncio Google';
+    if (!s && l.fbclid) return 'Anúncio Meta';
     if (s === 'instagram' || s === 'ig') return 'Instagram (bio)';
     if (s === 'links') return 'Página de links';
     return 'Site';
@@ -580,6 +581,11 @@ function filtrar(lista) {
   if (soNovidades) r = r.filter(l => l.aceita_novidades);
   return r;
 }
+function proximaCampanha(janela) {
+  const c = modelos.filter(m => m.enviar_em).map(m => ({ m, dias: Math.round((parseDia(m.enviar_em) - hoje0()) / 864e5) }))
+    .filter(x => x.dias >= 0 && x.dias <= janela).sort((a, b) => a.dias - b.dias);
+  return c[0] || null;
+}
 const pendentes = () => leads.filter(l => { const p = prazo(l); return p && p.diff <= 0; }).sort((x, y) => x.proximo_em.localeCompare(y.proximo_em));
 
 /* ---------- NAVEGAÇÃO ---------- */
@@ -612,8 +618,8 @@ document.addEventListener('click', e => {
 function render() {
   navHTML();
   const d = new Date();
-  const dias = Math.round((new Date(2026, 10, 27) - hoje0()) / 864e5);
-  const extra = view === 'hoje' && dias >= 0 && dias <= 7 ? (dias === 0 ? 'Black Friday é hoje' : `Black Friday ${dias === 1 ? 'amanhã' : `em ${dias} dias`}`) : '';
+  const pc = proximaCampanha(7);
+  const extra = view === 'hoje' && pc ? (pc.dias === 0 ? `${pc.m.nome}: enviar hoje` : `${pc.m.nome} ${pc.dias === 1 ? 'amanhã' : `em ${pc.dias} dias`}`) : '';
   $('#dateline').innerHTML = `${d.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}${extra ? ` · <b>${extra}</b>` : ''}`;
   ({ hoje: vHoje, funil: vFunil, campanhas: vCampanhas, mensagens: vMensagens })[view]();
 }
@@ -674,6 +680,7 @@ function vHoje() {
       ${semPasso.length ? `<p class="kick" style="margin-top:28px">Sem próximo passo</p><div class="box" style="padding:6px 20px">${semPasso.map(l => `<div class="upc">${tempHTML(l.temperatura)}<button data-open="${l.id}">${esc(curto(l))}</button><span class="t">${esc(etapa(l.status).t)} · ${esc(origemTxt(l))}</span><span class="pill ok">definir</span></div>`).join('')}</div>` : ''}
     </section>
     <aside>
+      ${(() => { const pc = proximaCampanha(21); if (!pc) return ''; return `<div class="box"><h4>Próxima <em>campanha</em></h4><p><b style="color:var(--tinta)">${esc(pc.m.nome)}</b> · enviar ${pc.dias === 0 ? '<b style="color:var(--turq-tx)">hoje</b>' : pc.dias === 1 ? 'amanhã' : 'em ' + fmtDia(pc.m.enviar_em)}. A mensagem já está pronta; envie um por um pelo botão WhatsApp de cada lead.</p><div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap"><button class="btn ghost sm" data-go="mensagens">Ver mensagem</button><button class="btn ghost sm" data-go="lista-nov">Quem recebe</button></div></div>`; })()}
       <div class="box dark"><h4>Aceitam <em>novidades</em></h4><p>${nov ? `${nov === 1 ? '1 contato autorizou' : nov + ' contatos autorizaram'} receber promoções. Envie um por um, com a mensagem pronta.` : 'Ninguém marcado ainda. Marque na ficha do lead quando a pessoa autorizar (LGPD).'}</p>${nov ? `<button class="btn turq sm" data-go="lista-nov">Ver lista</button>` : ''}</div>
       <div class="box"><h4>A <em>maré</em> agora</h4><p>Onde cada lead está no funil</p>
         <div class="flow">${ab.map(e => `<div>${e.t} ${mareHTML(e.n ? e.p : 0)}<b>${e.n}</b></div>`).join('')}</div></div>
@@ -812,7 +819,16 @@ function vCampanhas() {
 function vMensagens() {
   $('#view').innerHTML = `<div class="fhead"><div><h1 class="big">Mensagens prontas</h1></div><div class="tools"><button class="btn" id="t-new">+ Nova mensagem</button></div></div>
     <p class="ph">Use <code>{primeiro_nome}</code>, <code>{nome}</code>, <code>{servicos}</code> e <code>{negocio}</code> para preencher com os dados do lead.</p>
-    ${modelos.map(m => `<article class="tpl"><div style="min-width:0"><h3>${esc(m.nome)}</h3><div class="ch">${{ ambos: 'WhatsApp e e-mail', whatsapp: 'Só WhatsApp', email: 'Só e-mail' }[m.canal]}${m.assunto ? ' · assunto: ' + esc(m.assunto) : ''}</div><div class="tx">${esc(m.texto)}</div></div><button class="btn ghost sm" data-m="${m.id}">Editar</button></article>`).join('')}`;
+    ${(() => {
+      const card = m => `<article class="tpl"><div style="min-width:0"><h3>${esc(m.nome)}</h3><div class="ch">${m.enviar_em ? `<b style="color:var(--turq-tx)">Enviar em ${parseDia(m.enviar_em).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' })}</b> · ` : ''}${{ ambos: 'WhatsApp e e-mail', whatsapp: 'Só WhatsApp', email: 'Só e-mail' }[m.canal]}${m.assunto ? ' · assunto: ' + esc(m.assunto) : ''}</div><div class="tx">${esc(m.texto)}</div></div><button class="btn ghost sm" data-m="${m.id}">Editar</button></article>`;
+      const hj = iso(hoje0());
+      const dia = modelos.filter(m => !m.enviar_em);
+      const prox = modelos.filter(m => m.enviar_em && m.enviar_em >= hj).sort((a, b) => a.enviar_em.localeCompare(b.enviar_em));
+      const pass = modelos.filter(m => m.enviar_em && m.enviar_em < hj).sort((a, b) => b.enviar_em.localeCompare(a.enviar_em));
+      return `<p class="kick">Do dia a dia</p>${dia.map(card).join('') || '<p class="muted small">Nenhuma.</p>'}
+        <p class="kick" style="margin-top:28px">Campanhas programadas</p>${prox.map(card).join('') || '<p class="muted small">Nenhuma campanha futura. Crie uma com data de envio.</p>'}
+        ${pass.length ? `<p class="kick" style="margin-top:28px">Já passaram</p><div style="opacity:.6">${pass.map(card).join('')}</div>` : ''}`;
+    })()}`;
   $('#t-new').onclick = () => editarModelo(null);
   $('#view').querySelectorAll('[data-m]').forEach(b => b.onclick = () => editarModelo(modelos.find(m => m.id === b.dataset.m)));
 }
@@ -820,16 +836,17 @@ function editarModelo(m) {
   $('#modal-box').innerHTML = `<h2>${m ? 'Editar mensagem' : 'Nova mensagem'}</h2>
     <div class="field"><label class="f" for="t-nome">Nome</label><input id="t-nome" maxlength="80" value="${esc(m?.nome || '')}" placeholder="Ex.: Promoção de Natal"></div>
     <div class="field"><label class="f" for="t-canal">Usar em</label><select id="t-canal">${[['ambos','WhatsApp e e-mail'],['whatsapp','Só WhatsApp'],['email','Só e-mail']].map(([k, t]) => `<option value="${k}" ${m?.canal === k ? 'selected' : ''}>${t}</option>`).join('')}</select></div>
-    <div class="field"><label class="f" for="t-ass">Assunto do e-mail</label><input id="t-ass" maxlength="200" value="${esc(m?.assunto || '')}"></div>
+    <div class="grid2"><div class="field"><label class="f" for="t-ass">Assunto do e-mail</label><input id="t-ass" maxlength="200" value="${esc(m?.assunto || '')}"></div>
+    <div class="field"><label class="f" for="t-data">Data de envio (campanha)</label><input id="t-data" type="date" value="${esc(m?.enviar_em || '')}"></div></div>
     <div class="field"><label class="f" for="t-tx">Texto</label><textarea id="t-tx" rows="9" maxlength="4000">${esc(m?.texto || '')}</textarea></div>
     <p class="msg err" id="t-msg"></p>
     <div class="acts">${m ? '<button class="btn dng" id="t-del" style="margin-right:auto">Apagar</button>' : ''}<button class="btn ghost" id="t-back">Cancelar</button><button class="btn" id="t-save">Salvar</button></div>`;
   $('#modal').hidden = false;
   $('#t-back').onclick = fecharModal;
   $('#t-save').onclick = async () => {
-    const row = { nome: $('#t-nome').value.trim(), canal: $('#t-canal').value, assunto: $('#t-ass').value.trim() || null, texto: $('#t-tx').value.trim() };
+    const row = { nome: $('#t-nome').value.trim(), canal: $('#t-canal').value, assunto: $('#t-ass').value.trim() || null, texto: $('#t-tx').value.trim(), enviar_em: $('#t-data').value || null };
     if (!row.nome || !row.texto) return $('#t-msg').textContent = 'Preencha o nome e o texto.';
-    const q = m ? sb.from('modelos_mensagem').update(row).eq('id', m.id) : sb.from('modelos_mensagem').insert({ ...row, ordem: (modelos.at(-1)?.ordem || 0) + 1 });
+    const q = m ? sb.from('modelos_mensagem').update(row).eq('id', m.id) : sb.from('modelos_mensagem').insert({ ...row, ordem: Math.max(0, ...modelos.map(x => x.ordem || 0)) + 1 });
     const { error } = await q; if (error) return $('#t-msg').textContent = 'Erro: ' + error.message;
     fecharModal(); toast('Mensagem salva'); carregar();
   };
@@ -1000,7 +1017,9 @@ function enviar(l, canal) {
   $('#modal').hidden = false;
   const sel = $('#e-mod');
   sel.onchange = () => { const m = modelos.find(x => x.id === sel.value); $('#e-tx').value = m ? preencher(m.texto, l) : ''; if ($('#e-ass')) $('#e-ass').value = m ? preencher(m.assunto, l) : ''; };
-  if (lista[0]) { sel.value = lista[l.status === 'novo' ? 0 : Math.min(1, lista.length - 1)].id; sel.onchange(); }
+  const pcx = proximaCampanha(3);
+  if (pcx && lista.includes(pcx.m) && l.aceita_novidades) { sel.value = pcx.m.id; sel.onchange(); }
+  else if (lista[0]) { const base = lista.filter(m => !m.enviar_em); const alvo = base[l.status === 'novo' ? 0 : Math.min(1, base.length - 1)] || lista[0]; sel.value = alvo.id; sel.onchange(); }
   $('#e-cancel').onclick = fecharModal;
   $('#e-go').onclick = async () => {
     const tx = $('#e-tx').value.trim(); if (!tx) return $('#e-tx').focus();

@@ -476,10 +476,10 @@ const WHATSAPP = "5513997760432";
 const SUPABASE_URL = "https://mvkbcxbmzhnzrfnhxdjj.supabase.co";
 const SUPABASE_KEY = "sb_publishable_U1SugfBse4bBU5boEsqUBg_v3m7q6CR";
 
-// Origem do visitante (anúncios): guarda os parâmetros utm_* e fbclid da URL.
+// Origem do visitante (anúncios): guarda os parâmetros utm_*, fbclid (Meta) e gclid (Google) da URL.
 const ORIGEM = (() => {
   const q = new URLSearchParams(location.search), o = {};
-  ['utm_source','utm_medium','utm_campaign','utm_content','utm_term','fbclid'].forEach(k => { const v = q.get(k); if (v) o[k] = v.slice(0, k === 'fbclid' ? 500 : 200); });
+  ['utm_source','utm_medium','utm_campaign','utm_content','utm_term','fbclid','gclid'].forEach(k => { const v = q.get(k); if (v) o[k] = v.slice(0, k.endsWith('clid') ? 500 : 200); });
   try { if (Object.keys(o).length) sessionStorage.setItem('salt_origem', JSON.stringify(o)); else return JSON.parse(sessionStorage.getItem('salt_origem') || '{}'); } catch {}
   return o;
 })();
