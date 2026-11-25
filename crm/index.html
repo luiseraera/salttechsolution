@@ -188,7 +188,7 @@ code{background:rgba(255,255,255,.08);padding:1px 5px;border-radius:5px;font-siz
     <img src="/img/logo-salt.png" alt="SALT">
     <h1 id="login-t">Entrar no CRM</h1>
     <p class="muted small" id="login-sub">Acesso restrito à equipe da SALT.</p>
-    <div class="field"><label class="f" for="l-email">E-mail</label><input id="l-email" type="email" autocomplete="username" value="contato@salttechsolution.com.br" required></div>
+    <div class="field"><label class="f" for="l-email">E-mail</label><input id="l-email" type="email" autocomplete="username" value="luiscarvalhoecommerce@gmail.com" required></div>
     <div class="field" id="l-pass-w"><label class="f" for="l-pass">Senha</label><input id="l-pass" type="password" autocomplete="current-password" required></div>
     <button class="btn btn-pri" style="width:100%" id="l-go">Entrar</button>
     <p class="msg" id="l-msg" aria-live="polite"></p>
@@ -311,7 +311,7 @@ function lmsg(t, err) { const m = $('#l-msg'); m.textContent = t; m.className = 
 function traduz(e) {
   const m = (e && e.message) || String(e);
   if (/Invalid login/i.test(m)) return 'E-mail ou senha incorretos.';
-  if (/Email not confirmed/i.test(m)) return 'Confirme o e-mail primeiro: abra o link que enviamos para o contato@.';
+  if (/Email not confirmed/i.test(m)) return 'Confirme o e-mail primeiro: abra o link que enviamos para você.';
   if (/Password should be at least|weak/i.test(m)) return 'A senha precisa ter pelo menos 8 caracteres, com letras e números.';
   if (/already registered/i.test(m)) return 'Esse e-mail já tem acesso. Use "Já tenho acesso" ou "Esqueci a senha".';
   if (/rate limit/i.test(m)) return 'Muitas tentativas. Espere alguns minutos e tente de novo.';
