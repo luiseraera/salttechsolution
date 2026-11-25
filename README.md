@@ -48,8 +48,10 @@ Página para a bio do Instagram: **salttechsolution.com.br/links/?utm_source=ins
 
 ## CRM da SALT (`crm/`)
 App interno em **salttechsolution.com.br/crm/** (fora das buscas). Login pelo Supabase Auth do projeto SaltSite; só e-mails da tabela `private.crm_admins` (hoje: luiscarvalhoecommerce@gmail.com) veem os dados.
-- Funil: Novo → Em conversa → Proposta enviada → Fechado / Perdido (arrastar no computador; abas no celular).
-- Cada lead: próximo passo com data (aparece em "Para hoje"), valor da proposta, histórico (`contato_notas`), dados e origem do anúncio.
-- WhatsApp e e-mail um a um com mensagens prontas (`modelos_mensagem`, variáveis `{primeiro_nome}`, `{nome}`, `{servicos}`, `{negocio}`). O e-mail abre no Gmail do contato@.
-- Leads manuais (indicação, Instagram etc.) pelo botão "Novo lead".
+- Visual próprio ("caderno de vendas"): areia + marinho SALT + turquesa, fontes Geist e Instrument Serif em `crm/fonts/` (licença OFL).
+- **Hoje**: retornos do dia e atrasados, com WhatsApp, Ligar, Adiar e Feito; meta do mês (tabela `metas`).
+- **Funil**: Novo → Em conversa → Proposta enviada → Fechado / Perdido, em quadro (arrastar) ou lista; filtros por origem e "aceita novidades".
+- **Campanhas**: leads agrupados por `utm_campaign` / `utm_content`, com respostas, propostas, fechamentos e receita.
+- **Mensagens prontas** (`modelos_mensagem`, variáveis `{primeiro_nome}`, `{nome}`, `{servicos}`, `{negocio}`). O e-mail abre no Gmail do contato@.
+- Ficha do lead: etapa, temperatura (quente/morno/frio), próximo passo, valor, histórico (`contato_notas`).
 - Instalável no celular (Adicionar à tela inicial).
