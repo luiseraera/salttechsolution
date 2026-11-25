@@ -45,3 +45,11 @@ Página para a bio do Instagram: **salttechsolution.com.br/links/?utm_source=ins
 - A mensagem do WhatsApp e o assunto do e-mail levam a origem e um código curto, ex.: "Vim pelo Instagram… (ref: IG-BIO)". O código vem dos parâmetros `utm_*` do link (ex.: `?utm_source=meta&utm_medium=ads&utm_campaign=blackfriday` → `META-ADS-BLACKFRIDAY`).
 - Os botões que levam ao site repassam os `utm_*`, então o formulário do site grava a origem no contato.
 - Cada clique é gravado na tabela `cliques` do Supabase SaltSite (botão, origem, código, celular/computador). O site só grava; para ver: Supabase > SaltSite > Table Editor > `cliques`.
+
+## CRM da SALT (`crm/`)
+App interno em **salttechsolution.com.br/crm/** (fora das buscas). Login pelo Supabase Auth do projeto SaltSite; só e-mails da tabela `private.crm_admins` (hoje: contato@salttechsolution.com.br) veem os dados.
+- Funil: Novo → Em conversa → Proposta enviada → Fechado / Perdido (arrastar no computador; abas no celular).
+- Cada lead: próximo passo com data (aparece em "Para hoje"), valor da proposta, histórico (`contato_notas`), dados e origem do anúncio.
+- WhatsApp e e-mail um a um com mensagens prontas (`modelos_mensagem`, variáveis `{primeiro_nome}`, `{nome}`, `{servicos}`, `{negocio}`). O e-mail abre no Gmail do contato@.
+- Leads manuais (indicação, Instagram etc.) pelo botão "Novo lead".
+- Instalável no celular (Adicionar à tela inicial).
