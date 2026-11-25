@@ -119,7 +119,11 @@
 #cookie-banner .cb-acoes{display:grid;grid-template-columns:1fr 1fr;gap:10px}\
 #cookie-banner button{font:700 15px/1 Lato,system-ui,sans-serif;padding:13px 10px;border-radius:10px;cursor:pointer;background:transparent;color:#EEF2FA;border:1.5px solid rgba(255,255,255,.4)}\
 #cookie-banner button:hover{border-color:#2EDDD8;color:#2EDDD8}\
-#cookie-banner button:focus-visible{outline:2px solid #2EDDD8;outline-offset:2px}';
+#cookie-banner button:focus-visible{outline:2px solid #2EDDD8;outline-offset:2px}\
+@media (max-width:600px){#cookie-banner{left:10px;right:10px;bottom:10px;padding:12px 14px;border-radius:14px;font-size:13.5px;line-height:1.45}\
+#cookie-banner p{margin:0 0 10px}\
+#cookie-banner .cb-acoes{gap:8px}\
+#cookie-banner button{font-size:14px;padding:10px 8px;border-radius:9px}}';
 
   function mostrarBanner() {
     if (!temOpcionais() || document.getElementById('cookie-banner')) return;
@@ -130,8 +134,8 @@
     b.id = 'cookie-banner';
     b.setAttribute('role', 'dialog');
     b.setAttribute('aria-label', 'Preferências de cookies');
-    b.innerHTML = '<p>Usamos cookies do Google Analytics e do Meta (Facebook/Instagram) para entender como o site é usado e medir nossos anúncios. ' +
-      'Eles só são ativados se você aceitar. Saiba mais na <a href="/privacidade.html#cookies">Política de Privacidade</a>.</p>' +
+    b.innerHTML = '<p>Usamos cookies do Google e do Meta para medir nossos anúncios e melhorar o site. ' +
+      'Só ativamos se você aceitar. <a href="/privacidade.html#cookies">Saiba mais</a></p>' +
       '<div class="cb-acoes"><button type="button" data-escolha="recusar">Recusar</button>' +
       '<button type="button" data-escolha="aceitar">Aceitar</button></div>';
     b.addEventListener('click', function (e) {
