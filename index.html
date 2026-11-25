@@ -185,6 +185,9 @@ label small{font-weight:400;color:var(--mut)}
 input[aria-invalid="true"]{border-color:#FF6B7D;box-shadow:0 0 0 3px rgba(255,107,125,.2)}
 .note.err{color:#FF8A98}
 @media (max-width:560px){.row{grid-template-columns:1fr}}
+.optin{display:flex;gap:12px;align-items:flex-start;margin:4px 0 18px;font-size:14.5px;line-height:1.45;color:var(--tx);cursor:pointer}
+.optin input{width:20px;height:20px;flex:none;margin:1px 0 0;padding:0;accent-color:var(--blue);cursor:pointer}
+.optin small{display:block;color:var(--mut);font-size:12.5px;margin-top:2px}
 .lgpd{margin-top:4px;font-size:12.5px;color:var(--mut);opacity:.8}
 .lgpd a,footer a{color:inherit}
 
@@ -431,6 +434,7 @@ footer .brand img{height:28px}
         <label for="msg">Conte um pouco mais</label>
         <textarea id="msg" name="msg" placeholder="O que você quer resolver? Tem algum prazo?"></textarea>
       </div>
+      <label class="optin"><input type="checkbox" id="novidades" name="novidades"><span>Quero receber novidades e promoções da SALT<small>Poucas mensagens por WhatsApp ou e-mail. Você pode sair quando quiser.</small></span></label>
       <label for="preview">Sua mensagem</label>
       <div class="preview" id="preview" aria-live="polite"></div>
       <div class="send">
@@ -439,7 +443,7 @@ footer .brand img{height:28px}
         <button class="btn btn-ghost" type="button" id="copy">Copiar mensagem</button>
       </div>
       <p class="note" id="note"></p>
-      <p class="lgpd">Ao enviar, a SALT guarda estas informações só para responder ao seu contato. Veja a <a href="privacidade.html">Política de Privacidade</a>.</p>
+      <p class="lgpd">Ao enviar, a SALT guarda estas informações para responder ao seu contato e, só se você marcar a opção acima, para mandar novidades. Veja a <a href="privacidade.html">Política de Privacidade</a>.</p>
     </form>
   </div>
 </section>
@@ -560,6 +564,7 @@ function salvar(canal){
     negocio: f.negocio.value.trim().slice(0,160) || null,
     servicos: [...f.querySelectorAll('input[name=servico]:checked')].map(i => i.value),
     mensagem: f.msg.value.trim().slice(0,2000) || null,
+    aceita_novidades: f.novidades.checked,
     canal, ...ORIGEM
   };
   const chave = JSON.stringify(dados);
@@ -612,7 +617,7 @@ mail.addEventListener('click', async e => {
     nome: f.nome.value.trim(), whatsapp: whatsDigitos(), email: f.email.value.trim(),
     rede_social: f.rede.value.trim(), negocio: f.negocio.value.trim(),
     servicos: [...f.querySelectorAll('input[name=servico]:checked')].map(i => i.value),
-    mensagem: f.msg.value.trim(), x_conf: f.x_conf.value, t: Date.now() - carregou, ...ORIGEM
+    mensagem: f.msg.value.trim(), aceita_novidades: f.novidades.checked, x_conf: f.x_conf.value, t: Date.now() - carregou, ...ORIGEM
   };
   let r = null;
   try { r = await fetch('/api/contato', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dados) }); } catch {}

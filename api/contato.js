@@ -63,7 +63,8 @@ module.exports = async function handler(req, res) {
     mensagem: txt(b.mensagem, 2000),
     canal: b.so_avisar ? 'whatsapp' : 'email',
     fbclid: txt(b.fbclid, 500),
-    gclid: txt(b.gclid, 500)
+    gclid: txt(b.gclid, 500),
+    aceita_novidades: b.aceita_novidades === true
   };
   UTM.forEach(k => { dados[k] = txt(b[k], 200); });
   if (dados.email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(dados.email)) dados.email = null;
@@ -89,6 +90,7 @@ module.exports = async function handler(req, res) {
     ['Instagram/site', dados.rede_social],
     ['Trabalha com', dados.negocio],
     ['Serviços', dados.servicos.join(', ')],
+    ['Aceita novidades', dados.aceita_novidades ? 'Sim' : 'Não'],
     ['Mensagem', dados.mensagem],
     ['Origem', [dados.utm_source, dados.utm_campaign, dados.utm_content].filter(Boolean).join(' / ')]
   ].filter(l => l[1]);
