@@ -32,7 +32,9 @@
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-html,body{min-height:100%}
+html,body{min-height:100%;max-width:100%;overflow-x:hidden}
+@supports (overflow:clip){html,body{overflow-x:clip}}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 body{margin:0;background:var(--areia);color:var(--tinta);font:400 14px/1.5 var(--ff);-webkit-font-smoothing:antialiased}
 body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.35;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 .4 0 0 0 0 .35 0 0 0 0 .25 0 0 0 .08 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 button,input,select,textarea{font:inherit;color:inherit}
@@ -52,6 +54,10 @@ a{color:var(--turq-tx)}
 .icon-btn:hover{background:rgba(11,20,51,.06);color:var(--tinta)}
 input,select,textarea{width:100%;background:#fff;border:1px solid var(--linha2);border-radius:10px;padding:10px 12px}
 textarea{resize:vertical;min-height:84px}
+input[type=date]{min-width:0;max-width:100%;-webkit-appearance:none;appearance:none;min-height:42px;display:block}
+input[type=date]::-webkit-date-and-time-value{text-align:left}
+.who,.q,.last,.tx,.quote,.ng,.camp-h h3,.drawer-h h2,.sub,.tpl h3,.box p,.calm,.ad span,h6,.nm{overflow-wrap:anywhere}
+main,.drawer-b,.modal-box{min-width:0;max-width:100%}
 input:focus,select:focus,textarea:focus{outline:none;border-color:var(--turq-tx);box-shadow:0 0 0 3px rgba(10,116,112,.15)}
 .f{display:block;font-size:12px;font-weight:600;color:var(--mut);margin:0 0 5px;letter-spacing:.01em}
 .field{margin-bottom:13px}
@@ -294,6 +300,12 @@ code{background:var(--turq-bg);color:var(--turq-tx);padding:1px 6px;border-radiu
   .kpis div:nth-child(n+4){border-top:1px solid var(--linha)}
 }
 @media (max-width:900px){
+  input,select,textarea{font-size:16px}
+  .search input{font-size:16px}
+  main{overflow-x:hidden}
+  .head,.cols{min-width:0}
+  .head>*,.cols>*{min-width:0}
+  .dateline{letter-spacing:.04em;font-size:11px}
   #login{grid-template-columns:1fr}
   .login-art{padding:28px 24px 34px}
   .login-art h1{font-size:44px;margin-top:40px}
@@ -387,7 +399,7 @@ code{background:var(--turq-bg);color:var(--turq-tx);padding:1px 6px;border-radiu
     </div>
     <div class="bar">
       <div class="dateline" id="dateline"></div>
-      <div class="search"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="q" type="search" placeholder="Buscar lead, negócio, telefone" aria-label="Buscar leads"></div>
+      <div class="search"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="q" type="search" placeholder="Buscar lead ou telefone" aria-label="Buscar leads"></div>
       <button class="btn" id="b-new">+ Novo lead</button>
     </div>
     <div id="view"><div class="loading">Abrindo o caderno...</div></div>
