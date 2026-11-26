@@ -1019,7 +1019,16 @@ function enviar(l, canal) {
   sel.onchange = () => { const m = modelos.find(x => x.id === sel.value); $('#e-tx').value = m ? preencher(m.texto, l) : ''; if ($('#e-ass')) $('#e-ass').value = m ? preencher(m.assunto, l) : ''; };
   const pcx = proximaCampanha(3);
   if (pcx && lista.includes(pcx.m) && l.aceita_novidades) { sel.value = pcx.m.id; sel.onchange(); }
-  else if (lista[0]) { const base = lista.filter(m => !m.enviar_em); const alvo = base[l.status === 'novo' ? 0 : Math.min(1, base.length - 1)] || lista[0]; sel.value = alvo.id; sel.onchange(); }
+  else if (lista[0]) {
+    const porNome = n => lista.find(m => m.nome === n);
+    const bf = iso(hoje0()) <= '2026-12-06';
+    const alvo = ({
+      'novo': porNome('Primeiro contato'),
+      'em conversa': porNome('Retomar conversa'),
+      'proposta enviada': (bf && porNome('Cobrar proposta + Black Friday')) || porNome('Cobrar resposta da proposta')
+    })[l.status] || lista.find(m => !m.enviar_em) || lista[0];
+    sel.value = alvo.id; sel.onchange();
+  }
   $('#e-cancel').onclick = fecharModal;
   $('#e-go').onclick = async () => {
     const tx = $('#e-tx').value.trim(); if (!tx) return $('#e-tx').focus();
