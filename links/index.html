@@ -47,6 +47,16 @@ nav{width:100%;display:flex;flex-direction:column;gap:12px}
 .btn.main:hover{background:#1F7BFF;border-color:#1F7BFF}
 .btn .go{margin-left:auto;opacity:.7}
 :focus-visible{outline:2px solid var(--turq);outline-offset:3px}
+.bf{width:100%;margin:0 0 18px;padding:20px 18px 18px;border-radius:16px;text-align:left;position:relative;overflow:hidden;
+  background:radial-gradient(260px 200px at 100% 0%,rgba(46,221,216,.25),transparent 70%),linear-gradient(160deg,#0B2A8A,#0F1B45);border:1.5px solid rgba(46,221,216,.45)}
+.bf .tag{display:inline-block;background:#fff;color:#061033;font:700 13px/1 var(--fh);letter-spacing:.14em;padding:6px 10px;border-radius:6px}
+.bf .tag em{font-style:normal;color:#0068FF}
+.bf h2{font:700 30px/1 var(--fh);text-transform:uppercase;margin:12px 0 8px}
+.bf h2 span{background:linear-gradient(90deg,#4D94FF,#2EDDD8);-webkit-background-clip:text;background-clip:text;color:transparent}
+.bf p{margin:0 0 14px;color:#C9D2EA;font-size:15px}
+.bf .btn{min-height:54px;justify-content:center;background:#fff;color:#061033;border-color:#fff}
+.bf .btn:hover{background:#EEF2FA;border-color:#EEF2FA}
+.bf small.fine{display:block;margin-top:10px;font-size:11.5px;line-height:1.4;color:#93A0C6}
 footer{margin-top:34px;font-size:13px;color:var(--mut)}
 footer a{color:var(--mut)}
 </style>
@@ -57,6 +67,15 @@ footer a{color:var(--mut)}
   <h1>Sua loja, sua página, <span>seu sistema.</span></h1>
   <p class="lead">Lojas virtuais, landing pages, sistemas sob medida, tráfego pago e infraestrutura de TI.</p>
   <span class="bar" aria-hidden="true"></span>
+
+  <!-- Black Friday: aparece só até 06/12/2026 (o script esconde depois). -->
+  <section class="bf" id="bf" hidden aria-label="Oferta Black Friday">
+    <span class="tag">BLACK <em>FRIDAY</em></span>
+    <h2>Landing page <span>de presente</span></h2>
+    <p>Feche a gestão de tráfego pago no Meta Ads ou no Google Ads até <b>06/12</b> e ganhe a página dos seus anúncios, feita sob medida. Só 3 vagas.</p>
+    <a class="btn" id="bf-wa" data-botao="black-friday" href="#" target="_blank" rel="noopener">Quero minha vaga</a>
+    <small class="fine">Contrato mínimo de 3 meses. Uma landing page de 1 página grátis por cliente; páginas maiores pagam a diferença.</small>
+  </section>
 
   <nav aria-label="Links da SALT">
     <a class="btn main" id="wa" data-botao="whatsapp" href="#" target="_blank" rel="noopener">
@@ -122,6 +141,13 @@ document.querySelectorAll('[data-site]').forEach(a => {
   Object.entries(paraSite).forEach(([k, v]) => u.searchParams.set(k, v));
   a.href = u.toString();
 });
+
+// Black Friday: mostra o bloco até 06/12/2026 e monta a mensagem do WhatsApp com a origem.
+if (Date.now() < Date.parse('2026-12-07T00:00:00-03:00')) {
+  document.getElementById('bf').hidden = false;
+  const bfMsg = `Olá, SALT! Vi a Black Friday e quero garantir minha vaga: landing page de presente com a gestão de tráfego.\n(ref: ${(REF + '-BF').slice(0, 20)})`;
+  document.getElementById('bf-wa').href = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(bfMsg)}`;
+}
 
 // Registra cada clique (botão + origem) na tabela "cliques" do Supabase.
 const dispositivo = /Mobi|Android|iPhone/i.test(navigator.userAgent) ? 'celular' : 'computador';
